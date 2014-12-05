@@ -222,6 +222,7 @@ public class ItemViewer extends AbstractDSpaceTransformer implements
                 skip = metadata.value.indexOf("/handle/") + 8;
             }
             // else DOI, stick with skip == 0
+            log.info("looking for " + id);
 
             id = metadata.value.substring(skip); // skip host name
 
