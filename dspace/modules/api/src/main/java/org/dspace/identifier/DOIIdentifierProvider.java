@@ -778,10 +778,11 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     private void updateHasPartDataFile(Context c, Item dataPackage, String idNew, String idOld) throws AuthorizeException, SQLException {
         DCValue[] doiVals = dataPackage.getMetadata(DOIIdentifierProvider.identifierMetadata.schema, "relation", "haspart", Item.ANY);
 
-
+        log.debug("updateHasPartDataFile: idNew " + idNew + ", idOld " + idOld);
         dataPackage.clearMetadata(DOIIdentifierProvider.identifierMetadata.schema, "relation", "haspart", null);
 
         for(DCValue value : doiVals){
+            log.debug("updateHasPartDataFile: looking at " + value.value);
             if(!value.value.equals(idOld))
                 dataPackage.addMetadata(DOIIdentifierProvider.identifierMetadata.schema, "relation", "haspart", null, value.value);
         }
@@ -794,10 +795,13 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         Item dataPackage =org.dspace.workflow.DryadWorkflowUtils.getDataPackage(c, item);
         DCValue[] doiVals = dataPackage.getMetadata(DOIIdentifierProvider.identifierMetadata.schema, "relation", "haspart", Item.ANY);
 
+        log.debug("updateHasPartDataPackage: idNew " + idNew + ", idOld " + idOld);
 
         dataPackage.clearMetadata(DOIIdentifierProvider.identifierMetadata.schema, "relation", "haspart", null);
 
         for(DCValue value : doiVals){
+            log.debug("updateHasPartDataPackage: looking at " + value.value);
+
             if(!value.value.equals(idOld))
                 dataPackage.addMetadata(DOIIdentifierProvider.identifierMetadata.schema, "relation", "haspart", null, value.value);
         }
