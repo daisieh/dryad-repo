@@ -365,6 +365,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         if (identifier != null && identifier.startsWith("doi:")) {
             DOI dbDOI = perstMinter.getKnownDOI(identifier);
             if(dbDOI==null) {
+                log.debug ("identifier " + identifier + " is not found");
                 throw new IdentifierNotFoundException();
             }
             String value = dbDOI.getInternalIdentifier();
