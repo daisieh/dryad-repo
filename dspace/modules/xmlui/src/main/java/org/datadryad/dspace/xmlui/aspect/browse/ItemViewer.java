@@ -222,9 +222,9 @@ public class ItemViewer extends AbstractDSpaceTransformer implements
                 skip = metadata.value.indexOf("/handle/") + 8;
             }
             // else DOI, stick with skip == 0
-            log.info("looking for " + id);
 
             id = metadata.value.substring(skip); // skip host name
+            log.info("looking for " + id);
 
             if (id.startsWith("doi:") || id.startsWith("http://dx.doi.org/")) {
                 if (id.startsWith("http://dx.doi.org/")) {
