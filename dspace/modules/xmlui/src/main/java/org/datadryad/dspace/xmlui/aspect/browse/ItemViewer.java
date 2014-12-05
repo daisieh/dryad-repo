@@ -177,7 +177,7 @@ public class ItemViewer extends AbstractDSpaceTransformer implements
             // add log message that we are viewing the item
             // done here, as the serialization may not occur if the cache is
             // valid
-            log.info(LogManager.getHeader(context, "view_item", "handle="
+            log.info("getValidity() " + LogManager.getHeader(context, "view_item", "handle="
                     + (dso == null ? "" : dso.getHandle())));
         }
         return this.validity;
