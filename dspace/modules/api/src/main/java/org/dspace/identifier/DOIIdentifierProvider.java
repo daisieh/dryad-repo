@@ -197,8 +197,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                 if(history!=null && history.size() == 2 && !item.isArchived()){
                     revertDoisFirstItem(context, history);
                 }
-
-
+                removeHasPartDataFile(context, (Item) dso, doi);
             }
         } catch (Exception e) {
             log.error(LogManager.getHeader(context, "Error while attempting to register doi", "Item id: " + dso.getID()));
@@ -774,6 +773,19 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         return id;
     }
 
+    private void removeHasPartDataFile(Context c, Item dataPackage, String idNew) throws AuthorizeException, SQLException {
+        DCValue[] doiVals = dataPackage.getMetadata(DOIIdentifierProvider.identifierMetadata.schema, "relation", "haspart", Item.ANY);
+
+        log.debug("removeHasPartDataFile: idNew " + idNew);
+        dataPackage.clearMetadata(DOIIdentifierProvider.identifierMetadata.schema, "relation", "haspart", null);
+
+        for(DCValue value : doiVals){
+            log.debug("removeHasPartDataFile: looking at " + value.value);
+            if(!value.value.equals(idNew))
+                dataPackage.addMetadata(DOIIdentifierProvider.identifierMetadata.schema, "relation", "haspart", null, value.value);
+        }
+        dataPackage.update();
+    }
 
 
     private void updateHasPartDataFile(Context c, Item dataPackage, String idNew, String idOld) throws AuthorizeException, SQLException {
