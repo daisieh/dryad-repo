@@ -338,7 +338,7 @@ public class PGDOIDatabase implements org.springframework.beans.factory.Initiali
      * @return a DOI object if the key is found in the database, null if not
      */
     public DOI getByDOI(String aDOIKey) {
-        LOG.info("getByDOI looking for DOI " + aDOIKey);
+//        LOG.info("getByDOI looking for DOI " + aDOIKey);
         DOI doi = null;
         // Obtain Context
         Context context = getContext();
@@ -350,7 +350,7 @@ public class PGDOIDatabase implements org.springframework.beans.factory.Initiali
         try {
             TableRow doiRow = queryExistingDOI(context, aDOIKey);
             if(doiRow != null) {
-                LOG.info("getByDOI queried for DOI " + aDOIKey + " and found it");
+//                LOG.info("getByDOI queried for DOI " + aDOIKey + " and found it");
                 doi = createDOIFromRow(doiRow);
             }
         } catch (DOIFormatException ex) {

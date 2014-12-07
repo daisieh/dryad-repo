@@ -385,6 +385,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
             if(doi!=null)
                 url=doi.getTargetURL().toString();
         }
+        log.debug ("lookup(" + identifier + ") found url " + url);
         return url;
     }
 
