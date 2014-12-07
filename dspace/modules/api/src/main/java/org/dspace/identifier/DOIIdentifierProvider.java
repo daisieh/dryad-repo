@@ -179,7 +179,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                     }
                 }
 
-
+                log.debug ("deleting " + doi);
                 // If it is the most current version occurs to move the canonical to the previous version
                 VersionHistory history = retrieveVersionHistory(context, item);
                 if(history!=null && history.getLatestVersion().getItem().equals(item) && history.size() > 1){
