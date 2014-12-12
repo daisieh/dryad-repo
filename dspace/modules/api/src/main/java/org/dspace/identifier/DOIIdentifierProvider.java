@@ -759,6 +759,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     }
 
     private String revertIdentifierDF(Item item) throws AuthorizeException, SQLException {
+        log.debug("howdy");
         DCValue[] doiVals = item.getMetadata(DOIIdentifierProvider.identifierMetadata.schema, DOIIdentifierProvider.identifierMetadata.element, DOIIdentifierProvider.identifierMetadata.qualifier, Item.ANY);
 
         String id = doiVals[0].value;
