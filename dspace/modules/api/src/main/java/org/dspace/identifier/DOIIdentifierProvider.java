@@ -199,8 +199,8 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                 if(history!=null && history.size() == 2 && !item.isArchived()){
                     revertDoisFirstItem(context, history);
                 }
-                log.debug("going to removeHasPartDataFile");
-                removeHasPartDataFile(context, (Item) dso, doi);
+//                log.debug("going to removeHasPartDataFile");
+//                removeHasPartDataFile(context, (Item) dso, doi);
             }
         } catch (Exception e) {
             log.error(LogManager.getHeader(context, "Error while attempting to register doi", "Item id: " + dso.getID()));
