@@ -184,7 +184,8 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                 VersionHistory history = retrieveVersionHistory(context, item);
                 if(history!=null && history.getLatestVersion().getItem().equals(item) && history.size() > 1){
                     Item previous = history.getPrevious(history.getLatestVersion()).getItem();
-                    DOI doi_ = new DOI(doi, previous);
+                    DOI doi_ = getCanonicalDataFile(doi, previous);
+                    //DOI doi_ = new DOI(doi, previous);
                     log.debug ("moving canonical back to " + doi_.toString());
 
                     String collection = getCollection(context, previous);
