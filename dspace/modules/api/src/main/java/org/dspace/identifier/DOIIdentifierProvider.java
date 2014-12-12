@@ -175,7 +175,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                     // reassign the URL of the DOI
                     else{
                         DOI removedDOI = new DOI(doi.toString(), DOI.Type.TOMBSTONE);
-                        mint(removedDOI, true, null);
+                        mint(removedDOI, false, null);
                     }
                 }
 
@@ -762,7 +762,6 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         DCValue[] doiVals = item.getMetadata(DOIIdentifierProvider.identifierMetadata.schema, DOIIdentifierProvider.identifierMetadata.element, DOIIdentifierProvider.identifierMetadata.qualifier, Item.ANY);
 
         String id = doiVals[0].value;
-
         item.clearMetadata(DOIIdentifierProvider.identifierMetadata.schema, DOIIdentifierProvider.identifierMetadata.element, DOIIdentifierProvider.identifierMetadata.qualifier, Item.ANY);
 
         String prefix = id.substring(0, id.lastIndexOf(SLASH));
@@ -770,6 +769,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
 
         prefix = prefix.substring(0, prefix.lastIndexOf(DOT));
         suffix = suffix.substring(0, suffix.lastIndexOf(DOT));
+        log.debug ("reverting identifier from " + id + " to " + prefix + suffix);
 
         id = prefix + suffix;
 
