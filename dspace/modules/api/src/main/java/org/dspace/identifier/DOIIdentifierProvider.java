@@ -782,7 +782,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     private void removeHasPartDataFile(Context c, Item dataPackage, String idNew) throws AuthorizeException, SQLException {
         DCValue[] doiVals = dataPackage.getMetadata(DOIIdentifierProvider.identifierMetadata.schema, "relation", "haspart", Item.ANY);
 
-        log.debug("removeHasPartDataFile: idNew " + idNew);
+        log.debug("removeHasPartDataFile: idNew " + idNew + " doivals " + doiVals.length);
         dataPackage.clearMetadata(DOIIdentifierProvider.identifierMetadata.schema, "relation", "haspart", null);
 
         for(DCValue value : doiVals){
