@@ -759,7 +759,6 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     }
 
     private String revertIdentifierDF(Item item) throws AuthorizeException, SQLException {
-        log.debug("howdy");
         DCValue[] doiVals = item.getMetadata(DOIIdentifierProvider.identifierMetadata.schema, DOIIdentifierProvider.identifierMetadata.element, DOIIdentifierProvider.identifierMetadata.qualifier, Item.ANY);
         log.debug("howdy " + doiVals.length);
         String id = doiVals[0].value;
@@ -767,7 +766,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         log.debug("howdy "+id);
         String prefix = id.substring(0, id.lastIndexOf(SLASH));
         String suffix = id.substring(id.lastIndexOf(SLASH));
-
+        log.debug("hi " + prefix + ", " + suffix);
         prefix = prefix.substring(0, prefix.lastIndexOf(DOT));
         suffix = suffix.substring(0, suffix.lastIndexOf(DOT));
         log.debug ("reverting identifier from " + id + " to " + prefix + suffix);
