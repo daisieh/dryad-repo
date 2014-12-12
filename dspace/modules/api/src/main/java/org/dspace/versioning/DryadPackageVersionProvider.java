@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 
+import org.apache.log4j.Logger;
+
 /**
  * Created by IntelliJ IDEA.
  * User: fabio.bolognesi
@@ -21,6 +23,7 @@ import java.util.Date;
 public class DryadPackageVersionProvider extends AbstractVersionProvider implements ItemVersionProvider {
     private VersionHistoryDAO versionHistoryDAO;
     private VersionDAO versionDAO;
+    private static Logger log = Logger.getLogger(DryadPackageVersionProvider.class);
 
 
     public Item createNewItemAndAddItInWorkspace(Context c, Item previousItem) {
