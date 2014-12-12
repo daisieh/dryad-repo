@@ -185,6 +185,7 @@ public class DryadPackageVersionProvider extends AbstractVersionProvider impleme
             // assign tombstone to the DOI and reset canonical to the previous version only if there is a previous version
             IdentifierService identifierService = new DSpace().getSingletonService(IdentifierService.class);
             Item itemToDelete=versionToDelete.getItem();
+            log.debug ("deleteVersionedItem " + itemToDelete.toString());
             identifierService.delete(c, itemToDelete);
             versionDAO.delete(c, versionToDelete.getVersionId());
 
