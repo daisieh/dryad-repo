@@ -2172,7 +2172,6 @@ public class Item extends DSpaceObject
         else{
             IdentifierService identifierService = new DSpace().getSingletonService(IdentifierService.class);
             try {
-                log.debug("deleting");
                 identifierService.delete(ourContext, this);
             } catch (IdentifierException e) {
                 throw new RuntimeException(e);

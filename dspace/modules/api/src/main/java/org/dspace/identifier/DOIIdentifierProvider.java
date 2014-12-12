@@ -200,8 +200,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                     revertDoisFirstItem(context, history);
                 }
                 log.debug("going to removeHasPartDataFile");
-
-                removeHasPartDataFile(context, item, doi);
+                removeHasPartDataFile(context, (Item) dso, doi);
             }
         } catch (Exception e) {
             log.error(LogManager.getHeader(context, "Error while attempting to register doi", "Item id: " + dso.getID()));
@@ -780,15 +779,15 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         return id;
     }
 
-    private void removeHasPartDataFile(Context c, Item dataPackage, String fileDOI) throws AuthorizeException, SQLException {
+    private void removeHasPartDataFile(Context c, Item dataPackage, String idNew) throws AuthorizeException, SQLException {
         DCValue[] doiVals = dataPackage.getMetadata(DOIIdentifierProvider.identifierMetadata.schema, "relation", "haspart", Item.ANY);
 
-        log.debug("removeHasPartDataFile: fileDOI " + fileDOI + " doivals " + doiVals.length + " from package " + getDoiValue(dataPackage));
+        log.debug("removeHasPartDataFile: idNew " + idNew + " doivals " + doiVals.length + " from package " + getDoiValue(dataPackage));
         dataPackage.clearMetadata(DOIIdentifierProvider.identifierMetadata.schema, "relation", "haspart", null);
 
         for(DCValue value : doiVals){
             log.debug("removeHasPartDataFile: looking at " + value.value);
-            if(!value.value.equals(fileDOI))
+            if(!value.value.equals(idNew))
                 dataPackage.addMetadata(DOIIdentifierProvider.identifierMetadata.schema, "relation", "haspart", null, value.value);
         }
         dataPackage.update();
@@ -863,7 +862,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     private String getCanonicalDataPackage(String doi) {
         // no version present
         if(!isVersionedDOI(doi)) return doi;
-        return doi.substring(0, doi.toString().lastIndexOf(DOT));
+        return doi.toString().substring(0, doi.toString().lastIndexOf(DOT));
     }
 
     // given a package DOI (eg doi:10.5061/dryad.9054.1)
@@ -871,13 +870,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     private String getDataPackageVersion(String doi) {
         // no version present
         if(!isVersionedDOI(doi)) return "";
-        return doi.substring(doi.toString().lastIndexOf(DOT) + 1);
-    }
-
-    // given a file DOI (eg doi:10.5061/dryad.9054.1/3.1)
-    // returns the package DOI
-    private String getDataPackage(String doi) {
-        return doi.substring(0, doi.toString().lastIndexOf(SLASH));
+        return doi.toString().substring(doi.toString().lastIndexOf(DOT) + 1);
     }
 
     // given a file DOI (eg doi:10.5061/dryad.9054.1/3.1)

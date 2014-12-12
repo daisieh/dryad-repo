@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
-
 /**
  * Created by IntelliJ IDEA.
  * User: fabio.bolognesi
@@ -23,7 +21,6 @@ import org.apache.log4j.Logger;
 public class DryadPackageVersionProvider extends AbstractVersionProvider implements ItemVersionProvider {
     private VersionHistoryDAO versionHistoryDAO;
     private VersionDAO versionDAO;
-    private static Logger log = Logger.getLogger(DryadPackageVersionProvider.class);
 
 
     public Item createNewItemAndAddItInWorkspace(Context c, Item previousItem) {
@@ -188,7 +185,6 @@ public class DryadPackageVersionProvider extends AbstractVersionProvider impleme
             // assign tombstone to the DOI and reset canonical to the previous version only if there is a previous version
             IdentifierService identifierService = new DSpace().getSingletonService(IdentifierService.class);
             Item itemToDelete=versionToDelete.getItem();
-            log.debug ("deleteVersionedItem " + itemToDelete.toString());
             identifierService.delete(c, itemToDelete);
             versionDAO.delete(c, versionToDelete.getVersionId());
 
