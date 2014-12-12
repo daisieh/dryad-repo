@@ -185,18 +185,20 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                 if(history!=null && history.getLatestVersion().getItem().equals(item) && history.size() > 1){
                     Item previous = history.getPrevious(history.getLatestVersion()).getItem();
                     DOI doi_ = new DOI(doi, previous);
+                    log.debug ("moving canonical back to " + doi_.toString());
 
                     String collection = getCollection(context, previous);
                     String myDataPkgColl = configurationService.getProperty("stats.datapkgs.coll");
                     moveCanonical(previous, true, collection, myDataPkgColl, doi_);
                 }
-
+                log.debug("okay");
                 //  IF Deleting a 1st version not archived yet:
                 //  The DOI stored in the previous  should revert to the version without ".1".
                 // Canonical DOI already point to the right item: no needs to move it
                 if(history!=null && history.size() == 2 && !item.isArchived()){
                     revertDoisFirstItem(context, history);
                 }
+                log.debug("going to removeHasPartDataFile");
                 removeHasPartDataFile(context, (Item) dso, doi);
             }
         } catch (Exception e) {
