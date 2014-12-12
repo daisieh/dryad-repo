@@ -265,7 +265,8 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         // remove doi from DOI service .1
         String doiPrevious = getDoiValue(previous);
         DOI removedDOI = new DOI(doiPrevious.toString(), DOI.Type.TOMBSTONE);
-        mint(removedDOI, true, null);
+        log.debug ("reverting doi for "+ removedDOI.toString());
+        mint(removedDOI, false, null);
 
 
         if (collection.equals(myDataPkgColl)) {
