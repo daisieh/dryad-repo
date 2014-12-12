@@ -271,9 +271,11 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
 
         if (collection.equals(myDataPkgColl)) {
             // replace doi metadata: dryad.2335.1 with  dryad.2335
+            log.debug("revert identifier item to " + previous.toString());
             revertIdentierItem(previous);
         } else {
             // replace doi metadata: dryad.2335.1/1.1 with  dryad.2335/1
+            log.debug("revert identifier df to " + previous.toString());
             revertIdentifierDF(previous);
 
         }
