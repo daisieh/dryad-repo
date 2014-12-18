@@ -1027,6 +1027,7 @@ public class FlowUtils {
         else
             toDeleteItem = WorkflowItem.find(context, toDeleteId);
 
+        log.debug ("FlowUtils has asked to delete an item " + toDeleteId);
         //Check if we are removing a publication, if we have children remove em all !
         Item[] dataFiles = DryadWorkflowUtils.getDataFiles(context, toDeleteItem.getItem());
         for (Item dataFile : dataFiles) {

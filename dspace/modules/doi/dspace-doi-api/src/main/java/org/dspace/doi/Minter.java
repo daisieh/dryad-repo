@@ -146,8 +146,8 @@ public class Minter implements org.springframework.beans.factory.InitializingBea
                 throw new RuntimeException("Should be able to put if db doesn't contain DOI");
             }
         } else {
-	    log.debug(aDOI + " is in local database");
-	}
+	        log.debug(aDOI + " is in local database");
+	    }
     }
 
 	/**
