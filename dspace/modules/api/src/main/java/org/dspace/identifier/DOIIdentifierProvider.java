@@ -333,6 +333,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     private Map<String, String> createListMetadata(Item item){
         Map<String, String> metadata = new HashMap<String, String>();
         metadata.putAll(CDLDataCiteService.createMetadataList(item));
+        log.debug ("createListMetadata " + metadata.toString());
         return metadata;
     }
 
