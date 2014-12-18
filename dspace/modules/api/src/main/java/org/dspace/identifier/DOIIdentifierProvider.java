@@ -145,10 +145,8 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     public void moveCanonical(Context context, DSpaceObject dso) throws IdentifierException {
         try{
             Item item = (Item) dso;
-            String doi = getDoiValue((Item) dso);
-            DOI doi_ = new DOI(doi, item);
             String collection = getCollection(context, item);
-            moveCanonical(item, true, collection, myDataPkgColl, doi_);
+            moveCanonical(item, true, collection, myDataPkgColl);
 
             // if 1st version mint .1
             mintDOIFirstVersion(context, item, true);
@@ -185,12 +183,11 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                 VersionHistory history = retrieveVersionHistory(context, item);
                 if(history!=null && history.getLatestVersion().getItem().equals(item) && history.size() > 1){
                     Item previous = history.getPrevious(history.getLatestVersion()).getItem();
-                    DOI doi_ = new DOI(doi, previous);
 
                     String collection = getCollection(context, previous);
                     String myDataPkgColl = configurationService.getProperty("stats.datapkgs.coll");
-                    log.debug ("moveCanonical will be called on " + getDoiValue(previous) + ", collection " + collection + ", myDataPkgColl " + myDataPkgColl + ", doi_ " + doi_.toString());
-                    moveCanonical(previous, true, collection, myDataPkgColl, doi_);
+                    log.debug ("moveCanonical will be called on " + getDoiValue(previous) + ", collection " + collection + ", myDataPkgColl " + myDataPkgColl);
+                    moveCanonical(previous, false, collection, myDataPkgColl);
                     log.debug ("okay, now if it's a file that we're deleting, remove it from its package");
                 }
 
@@ -301,14 +298,14 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     }
 
 
-    private void moveCanonical(Item item, boolean register, String collection, String myDataPkgColl, DOI doi_) throws IOException, SQLException
+    private void moveCanonical(Item item, boolean register, String collection, String myDataPkgColl) throws IOException, SQLException
     {
         // move the canonical
         DOI canonical = null;
         if (collection.equals(myDataPkgColl)) {
-            canonical = getCanonicalDataPackage(doi_, item);
+            canonical = getCanonicalDataPackage(item);
         } else {
-            canonical = getCanonicalDataFile(doi_, item);
+            canonical = getCanonicalDataFile(item);
 
         }
 
@@ -835,8 +832,8 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     }
 
 
-    private DOI getCanonicalDataPackage(DOI doi, Item item) {
-        String canonicalID = getCanonicalDataPackage(doi.toString());
+    private DOI getCanonicalDataPackage(Item item) {
+        String canonicalID = getCanonicalDataPackage(getDoiValue(item));
         return new DOI(canonicalID, item);
     }
 
@@ -883,11 +880,12 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
      * input doi.toString()=   doi:10.5061/dryad.9054.1/1.1
      * output doi.toString()=  2rdfer334/1
      */
-    private DOI getCanonicalDataFile(DOI doi, Item item) {
-        return getCanonicalDataFile(doi.toString(), item);
+    private DOI getCanonicalDataFile(Item item) {
+        DOI canonicalID = getCanonicalDataFile(getDoiValue(item));
+        return new DOI(canonicalID, item);
     }
 
-    private DOI getCanonicalDataFile(String doiString, Item item) {
+    private String getCanonicalDataFile(String doiString) {
         // doi:10.5061/dryad.9054.1 (based on the input example)
         String idDP = doiString.substring(0, doiString.lastIndexOf(SLASH));
 
@@ -899,8 +897,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         if(idDF.lastIndexOf(DOT)!=-1){
             canonicalDF=idDF.substring(0, idDF.lastIndexOf(DOT));
         }
-        DOI canonical = new DOI(canonicalDP + SLASH + canonicalDF, item);
-        return canonical;
+        return canonicalDP + SLASH + canonicalDF;
     }
 
 
