@@ -881,7 +881,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
      * output doi.toString()=  2rdfer334/1
      */
     private DOI getCanonicalDataFile(Item item) {
-        DOI canonicalID = getCanonicalDataFile(getDoiValue(item));
+        String canonicalID = getCanonicalDataFile(getDoiValue(item));
         return new DOI(canonicalID, item);
     }
 
