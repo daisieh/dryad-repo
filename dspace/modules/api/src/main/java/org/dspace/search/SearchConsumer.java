@@ -25,6 +25,7 @@ import org.dspace.utils.DSpace;
 import org.dspace.versioning.Version;
 import org.dspace.versioning.VersionHistory;
 import org.dspace.versioning.VersioningService;
+import org.dspace.identifier.DOIIdentifierProvider;
 
 /**
  * Class for updating search indices from content events.
@@ -166,8 +167,8 @@ public class SearchConsumer implements Consumer
 //                            String idLastPart = id.substring(idFirstPart.length());
 //                            if(idLastPart.indexOf('.')!=-1){ // this is a versioned item
 //                                String canonical = idFirstPart + idLastPart.substring(0, idLastPart.indexOf('.'));
-                            if (isVersionedDOI(id)) {
-                                String canonical = getCanonicalDOI
+                            if (DOIIdentifierProvider.isVersionedDOI(id)) {
+                                String canonical = DOIIdentifierProvider.getCanonicalDOIString(id);
                                 IdentifierService identifierService = new DSpace().getSingletonService(IdentifierService.class);
                                 Item previousItem  = (Item) identifierService.resolve(ctx, canonical);
                                 objectsToUpdate.add(previousItem);
