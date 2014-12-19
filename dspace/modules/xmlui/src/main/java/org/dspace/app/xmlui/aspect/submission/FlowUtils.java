@@ -1037,7 +1037,9 @@ public class FlowUtils {
             datafileItem.deleteAll();
         }
         if(isWorkspaceItem){
+            log.debug ("FlowUtils is deleting a workspaceitem");
            ((WorkspaceItem) toDeleteItem).deleteAll();
+            log.debug ("okay");
         } else {
             WorkspaceItem wsi = WorkflowManager.rejectWorkflowItem(context, (WorkflowItem) toDeleteItem, null, null, null, false);
             wsi.deleteAll();

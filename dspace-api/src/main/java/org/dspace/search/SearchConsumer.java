@@ -174,6 +174,7 @@ public class SearchConsumer implements Consumer
                  * decisions on indexing and/or removal
                  */
                 String hdl = iu.getHandle();
+                log.debug("")
                 if (hdl != null && !handlesToDelete.contains(hdl))
                 {
                     try
