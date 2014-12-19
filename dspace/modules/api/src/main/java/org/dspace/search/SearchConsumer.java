@@ -162,10 +162,12 @@ public class SearchConsumer implements Consumer
                         DCValue[] values = item.getMetadata("dc.identifier");
                         if(values!=null && values.length > 0){
                             id = values[0].value;
-                            String idFirstPart="doi:10.5061/dryad.";
-                            String idLastPart = id.substring(idFirstPart.length());
-                            if(idLastPart.indexOf('.')!=-1){ // this is a versioned item
-                                String canonical = idFirstPart + idLastPart.substring(0, idLastPart.indexOf('.'));
+//                            String idFirstPart="doi:10.5061/dryad.";
+//                            String idLastPart = id.substring(idFirstPart.length());
+//                            if(idLastPart.indexOf('.')!=-1){ // this is a versioned item
+//                                String canonical = idFirstPart + idLastPart.substring(0, idLastPart.indexOf('.'));
+                            if (isVersionedDOI(id)) {
+                                String canonical = getCanonicalDOI
                                 IdentifierService identifierService = new DSpace().getSingletonService(IdentifierService.class);
                                 Item previousItem  = (Item) identifierService.resolve(ctx, canonical);
                                 objectsToUpdate.add(previousItem);
