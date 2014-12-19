@@ -848,13 +848,13 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         return true;
     }
 
-    public static boolean isDataPackageDOI (String doi) {
+    public static boolean isDataPackageDOI (String doiString) {
         // if the last part of the DOI after the last slash contains the substring "dryad", it's a package.
         String suffix = doiString.substring(doiString.lastIndexOf(SLASH) + 1);
         return suffix.contains("dryad");
     }
 
-    public static boolean isDataFileDOI (String doi) {
+    public static boolean isDataFileDOI (String doiString) {
         // if the last part of the DOI after the last slash is just numbers, it is a file.
         String suffix = doiString.substring(doiString.lastIndexOf(SLASH) + 1);
         return suffix.matches("\\d+\\.*\\d*");
