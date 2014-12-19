@@ -79,11 +79,11 @@ public class BasicDispatcher extends Dispatcher
                 return;
             }
 
-            if (log.isDebugEnabled())
-            {
+//            if (log.isDebugEnabled())
+//            {
                 log.debug("Processing queue of "
                         + String.valueOf(events.size()) + " events.");
-            }
+//            }
 
             // transaction identifier applies to all events created in
             // this context for the current transaction. Prefix it with
@@ -95,12 +95,12 @@ public class BasicDispatcher extends Dispatcher
                 event.setDispatcher(getIdentifier());
                 event.setTransactionID(tid);
 
-                if (log.isDebugEnabled())
-                {
+//                if (log.isDebugEnabled())
+//                {
                     log.debug("Iterating over "
                             + String.valueOf(consumers.values().size())
                             + " consumers...");
-                }
+//                }
 
                 for (Iterator ci = consumers.values().iterator(); ci.hasNext();)
                 {
@@ -108,11 +108,11 @@ public class BasicDispatcher extends Dispatcher
 
                     if (event.pass(cp.getFilters()))
                     {
-                        if (log.isDebugEnabled())
-                        {
+//                        if (log.isDebugEnabled())
+//                        {
                             log.debug("Sending event to \"" + cp.getName()
                                     + "\": " + event.toString());
-                        }
+//                        }
 
                         try
                         {
