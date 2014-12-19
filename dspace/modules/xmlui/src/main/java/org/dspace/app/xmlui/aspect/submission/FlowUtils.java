@@ -1044,7 +1044,9 @@ public class FlowUtils {
             WorkspaceItem wsi = WorkflowManager.rejectWorkflowItem(context, (WorkflowItem) toDeleteItem, null, null, null, false);
             wsi.deleteAll();
         }
+        log.debug("committing context");
         context.commit();
+        log.debug("context committed");
     }
 
 
