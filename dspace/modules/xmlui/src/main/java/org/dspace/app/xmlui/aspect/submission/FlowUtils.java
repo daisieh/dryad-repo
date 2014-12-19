@@ -1045,6 +1045,7 @@ public class FlowUtils {
             wsi.deleteAll();
         }
         log.debug("committing context");
+        log.debug("with events " + context.getEvents().toString());
         context.commit();
         log.debug("context committed");
     }
