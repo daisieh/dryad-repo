@@ -177,7 +177,7 @@ public class ItemViewer extends AbstractDSpaceTransformer implements
             // add log message that we are viewing the item
             // done here, as the serialization may not occur if the cache is
             // valid
-            log.info(LogManager.getHeader(context, "view_item", "handle="
+            log.info("getValidity() " + LogManager.getHeader(context, "view_item", "handle="
                     + (dso == null ? "" : dso.getHandle())));
         }
         return this.validity;
@@ -224,6 +224,7 @@ public class ItemViewer extends AbstractDSpaceTransformer implements
             // else DOI, stick with skip == 0
 
             id = metadata.value.substring(skip); // skip host name
+            log.info("looking for " + id);
 
             if (id.startsWith("doi:") || id.startsWith("http://dx.doi.org/")) {
                 if (id.startsWith("http://dx.doi.org/")) {

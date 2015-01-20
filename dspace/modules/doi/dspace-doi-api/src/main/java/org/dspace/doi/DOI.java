@@ -197,7 +197,7 @@ public class DOI {
 			return true;
 		}
 		if (!(aObject instanceof DOI)) {
-			LOG.warn("In equals() instanceof comparison, DOI was "
+			LOG.warn("In equals() instanceof comparison, DOI " + aObject.toString() + " was "
 					+ aObject.getClass().getName());
 			return false;
 		}
