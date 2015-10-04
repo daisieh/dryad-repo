@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * User: lantian @ atmire . com
@@ -202,6 +204,23 @@ public class JournalUtils {
         return null;
     }
 
+    public static String getCanonicalManuscriptID(Concept concept, Manuscript manuscript) {
+        String canonicalID = manuscript.manuscriptId;
+        String regex = null;
+        try {
+            AuthorityMetadataValue[] vals = concept.getMetadata("journal","manuscriptNumberIgnorePattern",null, Item.ANY);
+            if(vals != null && vals.length > 0) {
+                regex = vals[0];
+                Matcher manuscriptMatcher = Pattern.compile(regex).matcher(canonicalID);
+                if (manuscriptMatcher.find()) {
+                    canonicalID = manuscriptMatcher.group(1);
+                }
+            }
+        } catch(Exception e) {
+            log.error(e.getMessage(),e);
+        }
+        return canonicalID;
+    }
 
     public static String getFullName(Concept concept) {
         AuthorityMetadataValue[] vals = concept.getMetadata("journal","fullname",null, Item.ANY);
@@ -540,5 +559,4 @@ public class JournalUtils {
             }
         }
     }
-
 }
