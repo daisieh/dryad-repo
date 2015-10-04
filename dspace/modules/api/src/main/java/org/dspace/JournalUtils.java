@@ -477,25 +477,33 @@ public class JournalUtils {
                 action == JournalUtils.RecommendedBlackoutAction.JOURNAL_NOT_INTEGRATED);
     }
 
-    public static void writeManuscriptToXMLFile(Manuscript manuscript, File file) {
-        FileOutputStream outputStream = null;
+    public static void writeManuscriptToXMLFile(Context context, Manuscript manuscript) {
         try {
-            outputStream = new FileOutputStream(file);
-        } catch (FileNotFoundException e) {
-            log.warn("couldn't open a file to write", e);
-        }
+            Concept concept = JournalUtils.getJournalConceptById(context, manuscript.manuscriptId);
+            String filename = JournalUtils.escapeFilename(manuscript.manuscriptId + ".xml");
+            File file = new File(JournalUtils.getMetadataDir(concept), filename);
+            FileOutputStream outputStream = null;
 
-        if (outputStream != null) {
             try {
-                ManuscriptToLegacyXMLConverter.convertToInternalXML(manuscript, outputStream);
-                log.info("wrote xml to file " + file.getAbsolutePath());
-            } catch (JAXBException e) {
-                log.warn("couldn't convert to XML");
+                outputStream = new FileOutputStream(file);
+            } catch (FileNotFoundException e) {
+                log.warn("couldn't open a file to write", e);
             }
+
+            if (outputStream != null) {
+                try {
+                    ManuscriptToLegacyXMLConverter.convertToInternalXML(manuscript, outputStream);
+                    log.info("wrote xml to file " + file.getAbsolutePath());
+                } catch (JAXBException e) {
+                    log.warn("couldn't convert to XML");
+                }
+            }
+        } catch (SQLException e) {
+            throw new SubmissionException(e);
         }
     }
 
-    public static void writeManuscriptToDB(Manuscript manuscript) throws StorageException {
+    public static void writeManuscriptToDB(Context context, Manuscript manuscript) throws StorageException {
         StoragePath storagePath = new StoragePath();
         storagePath.addPathElement(Organization.ORGANIZATION_CODE, manuscript.organization.organizationCode);
 
