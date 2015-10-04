@@ -203,7 +203,7 @@ public class JournalUtils {
         try {
             AuthorityMetadataValue[] vals = concept.getMetadata("journal","manuscriptNumberIgnorePattern",null, Item.ANY);
             if(vals != null && vals.length > 0) {
-                regex = vals[0];
+                regex = vals[0].getValue();
                 Matcher manuscriptMatcher = Pattern.compile(regex).matcher(canonicalID);
                 if (manuscriptMatcher.find()) {
                     canonicalID = manuscriptMatcher.group(1);
