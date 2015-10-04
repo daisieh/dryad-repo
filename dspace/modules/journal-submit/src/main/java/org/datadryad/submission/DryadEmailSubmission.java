@@ -127,7 +127,7 @@ public class DryadEmailSubmission extends HttpServlet {
     }
 
     private void retrieveMail () {
-        LOGGER.info ("retrieving mail with label '" + ConfigurationManager.getProperty("submit.journal.email.label") + "'");
+        LOGGER.info("retrieving mail with label '" + ConfigurationManager.getProperty("submit.journal.email.label") + "'");
         try {
             List<String> messageIDs = DryadGmailService.getJournalMessageIds();
             if (messageIDs != null) {
@@ -362,7 +362,7 @@ public class DryadEmailSubmission extends HttpServlet {
             if (concept == null) {
                 // find the associated concept based on the journalCode.
                 try {
-                    concept = JournalUtils.getJournalConceptById(context, journalCode);
+                    concept = JournalUtils.getJournalConceptByShortID(context, journalCode);
                 } catch (SQLException e) {
                     throw new SubmissionException(e);
                 }
