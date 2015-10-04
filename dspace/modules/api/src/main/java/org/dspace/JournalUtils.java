@@ -477,7 +477,7 @@ public class JournalUtils {
                 action == JournalUtils.RecommendedBlackoutAction.JOURNAL_NOT_INTEGRATED);
     }
 
-    public static void writeManuscriptToXMLFile(Context context, Manuscript manuscript) {
+    public static void writeManuscriptToXMLFile(Context context, Manuscript manuscript) throws StorageException{
         try {
             Concept concept = JournalUtils.getJournalConceptById(context, manuscript.manuscriptId);
             String filename = JournalUtils.escapeFilename(manuscript.manuscriptId + ".xml");
