@@ -287,6 +287,74 @@ public class DryadEmailSubmission extends HttpServlet {
             message = builder.toString();
         }
 
+<<<<<<< HEAD
+=======
+        // Then we can hand off to implementer of EmailParser
+        ParsingResult result = parseMessage(message, mime.getFrom());
+
+        if (result.getStatus() != null) {
+            throw new SubmissionException(result.getStatus());
+        }
+
+        if (result.hasFlawedId()) {
+            throw new SubmissionException("Result ID is flawed: "
+                    + result.getSubmissionId());
+        }
+
+        return parseToXML(result);
+
+    }
+
+    private String parseToXML (ParsingResult result) {
+
+        // We'll use JDOM b/c the libs are already included in DSpace
+        SAXBuilder saxBuilder = new SAXBuilder();
+        String xml = result.getSubmissionData().toString();
+
+        // FIXME: Individual Email parsers don't supply a root element
+        // Our JDOM classes below will add version, encoding, etc.
+        xml = "<DryadEmailSubmission>"
+                + System.getProperty("line.separator") + xml
+                + "</DryadEmailSubmission>";
+
+        StringReader xmlReader = new StringReader(xml);
+	Context context = null;
+        try {
+            Format format = Format.getPrettyFormat();
+            XMLOutputter toFile = new XMLOutputter(format);
+            Document doc = saxBuilder.build(xmlReader);
+            String journalCode = JournalUtils.cleanJournalCode(result.getJournalCode());
+
+            LOGGER.debug("Getting metadata dir for " + journalCode);
+
+            context = new Context();
+            Concept journalConcept = JournalUtils.getJournalConceptByShortID(context, journalCode);
+            File dir = new File(JournalUtils.getMetadataDir(journalConcept));
+
+            String submissionId = result.getSubmissionId();
+            String filename = JournalUtils.escapeFilename(submissionId + ".xml");
+            File file = new File(dir, filename);
+            LOGGER.info ("wrote xml to file " + file.getAbsolutePath());
+            FileOutputStream out = new FileOutputStream(file);
+            OutputStreamWriter writer = new OutputStreamWriter(out, "UTF-8");
+
+            // And we write the output to our submissions directory
+            toFile.output(doc, new BufferedWriter(writer));
+        } catch (Exception details) {
+            LOGGER.debug("failed to write to file: xml content would have been: " + xml);
+            throw new SubmissionRuntimeException(details);
+        } finally {
+	    if (context != null) {
+		context.abort();
+	    }
+	}
+        return xml;
+    }
+
+
+    private ParsingResult parseMessage(String aMessage, Address[] addresses)
+            throws SubmissionException {
+>>>>>>> datadryad/dryad-master
         List<String> dryadContent = new ArrayList<String>();
         Scanner emailScanner = new Scanner(message);
         String journalName = null;
