@@ -499,7 +499,7 @@ public class JournalUtils {
                 }
             }
         } catch (SQLException e) {
-            throw new SubmissionException(e);
+            throw new StorageException(e);
         }
     }
 
