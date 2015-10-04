@@ -482,15 +482,15 @@ public class JournalUtils {
         try {
             outputStream = new FileOutputStream(file);
         } catch (FileNotFoundException e) {
-            LOGGER.warn("couldn't open a file to write", e);
+            log.warn("couldn't open a file to write", e);
         }
 
         if (outputStream != null) {
             try {
                 ManuscriptToLegacyXMLConverter.convertToInternalXML(manuscript, outputStream);
-                LOGGER.info("wrote xml to file " + file.getAbsolutePath());
+                log.info("wrote xml to file " + file.getAbsolutePath());
             } catch (JAXBException e) {
-                LOGGER.warn("couldn't convert to XML");
+                log.warn("couldn't convert to XML");
             }
         }
     }
@@ -504,10 +504,10 @@ public class JournalUtils {
         List<Organization> orgs = organizationStorage.getResults(storagePath, manuscript.organization.organizationCode, 0);
         if (orgs.size() == 0) {
             try {
-                LOGGER.info ("creating an organization " + manuscript.organization.organizationCode);
+                log.info ("creating an organization " + manuscript.organization.organizationCode);
                 organizationStorage.create(storagePath, manuscript.organization);
             } catch (StorageException ex) {
-                LOGGER.error("Exception creating organizations", ex);
+                log.error("Exception creating organizations", ex);
             }
         }
 
@@ -519,16 +519,16 @@ public class JournalUtils {
         if (manuscripts.size() == 0) {
             try {
                 manuscriptStorage.create(storagePath, manuscript);
-                LOGGER.info("adding manuscript " + manuscript.manuscriptId + " to the database for organization " + manuscript.organization.organizationCode);
+                log.info("adding manuscript " + manuscript.manuscriptId + " to the database for organization " + manuscript.organization.organizationCode);
             } catch (StorageException ex) {
-                LOGGER.error("Exception creating manuscript", ex);
+                log.error("Exception creating manuscript", ex);
             }
         } else {
             try {
                 manuscriptStorage.update(storagePath, manuscript);
-                LOGGER.info("updating manuscript " + manuscript.manuscriptId + " to the database for organization " + manuscript.organization.organizationCode);
+                log.info("updating manuscript " + manuscript.manuscriptId + " to the database for organization " + manuscript.organization.organizationCode);
             } catch (StorageException ex) {
-                LOGGER.error("Exception updating manuscript", ex);
+                log.error("Exception updating manuscript", ex);
             }
         }
     }
