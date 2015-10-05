@@ -491,7 +491,11 @@ public class JournalUtils {
 
     public static void writeManuscriptToXMLFile(Context context, Manuscript manuscript) throws StorageException{
         try {
+            log.info ("looking for metadatadir for " + manuscript.manuscriptId);
             Concept concept = JournalUtils.getJournalConceptById(context, manuscript.manuscriptId);
+            if (concept == null) {
+                log.info ("couldn't find concept");
+            }
             String filename = JournalUtils.escapeFilename(manuscript.manuscriptId + ".xml");
             File file = new File(JournalUtils.getMetadataDir(concept), filename);
             FileOutputStream outputStream = null;
