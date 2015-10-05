@@ -493,25 +493,24 @@ public class JournalUtils {
         try {
             log.info ("looking for metadatadir for " + manuscript.organization.organizationCode);
             Concept concept = JournalUtils.getJournalConceptByShortID(context, manuscript.organization.organizationCode);
-            if (concept == null) {
-                log.info ("couldn't find concept");
-            }
-            String filename = JournalUtils.escapeFilename(manuscript.manuscriptId + ".xml");
-            File file = new File(JournalUtils.getMetadataDir(concept), filename);
-            FileOutputStream outputStream = null;
+            if (concept != null) {
+                String filename = JournalUtils.escapeFilename(manuscript.manuscriptId + ".xml");
+                File file = new File(JournalUtils.getMetadataDir(concept), filename);
+                FileOutputStream outputStream = null;
 
-            try {
-                outputStream = new FileOutputStream(file);
-            } catch (FileNotFoundException e) {
-                log.warn("couldn't open a file to write", e);
-            }
-
-            if (outputStream != null) {
                 try {
-                    ManuscriptToLegacyXMLConverter.convertToInternalXML(manuscript, outputStream);
-                    log.info("wrote xml to file " + file.getAbsolutePath());
-                } catch (JAXBException e) {
-                    log.warn("couldn't convert to XML");
+                    outputStream = new FileOutputStream(file);
+                } catch (FileNotFoundException e) {
+                    log.warn("couldn't open a file to write", e);
+                }
+
+                if (outputStream != null) {
+                    try {
+                        ManuscriptToLegacyXMLConverter.convertToInternalXML(manuscript, outputStream);
+                        log.info("wrote xml to file " + file.getAbsolutePath());
+                    } catch (JAXBException e) {
+                        log.warn("couldn't convert to XML");
+                    }
                 }
             }
         } catch (SQLException e) {
