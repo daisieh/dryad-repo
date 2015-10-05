@@ -1,9 +1,16 @@
 package org.dspace;
 
 import org.apache.log4j.Logger;
-import org.dspace.content.Item;
+import org.datadryad.rest.converters.ManuscriptToLegacyXMLConverter;
+import org.datadryad.rest.models.Manuscript;
+import org.datadryad.rest.models.Organization;
+import org.datadryad.rest.storage.StorageException;
+import org.datadryad.rest.storage.StoragePath;
+import org.datadryad.rest.storage.rdbms.ManuscriptDatabaseStorageImpl;
+import org.datadryad.rest.storage.rdbms.OrganizationDatabaseStorageImpl;
 import org.dspace.content.Collection;
 import org.dspace.content.DCValue;
+import org.dspace.content.Item;
 import org.dspace.content.authority.AuthorityMetadataValue;
 import org.dspace.content.authority.Concept;
 import org.dspace.content.authority.Scheme;
@@ -11,11 +18,17 @@ import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
 import org.dspace.workflow.DryadWorkflowUtils;
 
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * User: lantian @ atmire . com
@@ -446,7 +459,6 @@ public class JournalUtils {
     public static Map<String, String> findJournalProperties(Context c, String journal){
         Map<String, String> myJournalProperties = new HashMap<String, String>();
 
-
         try {
             String publicationNameProp = ConfigurationManager.getProperty("solrauthority.searchscheme.prism_publicationName");
             Scheme scheme = Scheme.findByIdentifier(c, publicationNameProp);
@@ -484,6 +496,72 @@ public class JournalUtils {
                 action == JournalUtils.RecommendedBlackoutAction.JOURNAL_NOT_INTEGRATED);
     }
 
+    public static void writeManuscriptToXMLFile(Context context, Manuscript manuscript) throws StorageException {
+        try {
+            log.debug ("looking for metadatadir for " + manuscript.organization.organizationCode);
+            Concept concept = JournalUtils.getJournalConceptByShortID(context, manuscript.organization.organizationCode);
+            if (concept != null) {
+                String filename = JournalUtils.escapeFilename(manuscript.manuscriptId + ".xml");
+                File file = new File(JournalUtils.getMetadataDir(concept), filename);
+                FileOutputStream outputStream = null;
+
+                try {
+                    outputStream = new FileOutputStream(file);
+                } catch (FileNotFoundException e) {
+                    log.warn("couldn't open a file to write", e);
+                }
+
+                if (outputStream != null) {
+                    try {
+                        ManuscriptToLegacyXMLConverter.convertToInternalXML(manuscript, outputStream);
+                        log.info("wrote xml to file " + file.getAbsolutePath());
+                    } catch (JAXBException e) {
+                        log.warn("couldn't convert to XML");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    public static void writeManuscriptToDB(Context context, Manuscript manuscript) throws StorageException {
+        StoragePath storagePath = new StoragePath();
+        storagePath.addPathElement(Organization.ORGANIZATION_CODE, manuscript.organization.organizationCode);
+
+        // check to see if this organization exists in the database: if not, add it.
+        OrganizationDatabaseStorageImpl organizationStorage = new OrganizationDatabaseStorageImpl();
+        List<Organization> orgs = organizationStorage.getResults(storagePath, manuscript.organization.organizationCode, 0);
+        if (orgs.size() == 0) {
+            try {
+                log.info ("creating an organization " + manuscript.organization.organizationCode);
+                organizationStorage.create(storagePath, manuscript.organization);
+            } catch (StorageException ex) {
+                log.error("Exception creating organizations", ex);
+            }
+        }
+
+        ManuscriptDatabaseStorageImpl manuscriptStorage = new ManuscriptDatabaseStorageImpl();
+        storagePath.addPathElement(Manuscript.MANUSCRIPT_ID, manuscript.manuscriptId);
+        List<Manuscript> manuscripts = manuscriptStorage.getResults(storagePath, manuscript.manuscriptId, 10);
+
+        // if there isn't a manuscript already in the db, create it. Otherwise, update.
+        if (manuscripts.size() == 0) {
+            try {
+                manuscriptStorage.create(storagePath, manuscript);
+                log.info("adding manuscript " + manuscript.manuscriptId + " to the database for organization " + manuscript.organization.organizationCode);
+            } catch (StorageException ex) {
+                log.error("Exception creating manuscript", ex);
+            }
+        } else {
+            try {
+                manuscriptStorage.update(storagePath, manuscript);
+                log.info("updating manuscript " + manuscript.manuscriptId + " to the database for organization " + manuscript.organization.organizationCode);
+            } catch (StorageException ex) {
+                log.error("Exception updating manuscript", ex);
+            }
+        }
+    }
     public static String cleanJournalCode(String journalCode) {
         return journalCode.replaceAll("[^a-zA-Z0-9]", "").toUpperCase();
     }
