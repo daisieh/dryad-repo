@@ -127,7 +127,7 @@ public class DryadEmailSubmission extends HttpServlet {
     }
 
     private void retrieveMail () {
-        LOGGER.info ("retrieving mail with label '" + ConfigurationManager.getProperty("submit.journal.email.label") + "'");
+        LOGGER.info("retrieving mail with label '" + ConfigurationManager.getProperty("submit.journal.email.label") + "'");
         try {
             List<String> messageIDs = DryadGmailService.getJournalMessageIds();
             if (messageIDs != null) {
@@ -365,7 +365,7 @@ public class DryadEmailSubmission extends HttpServlet {
                 concept = JournalUtils.getJournalConceptByShortID(context, journalCode);
             } catch (SQLException e) {
                 throw new SubmissionException(e);
-	    }
+	        }
 
             if (concept == null) {
                 throw new SubmissionException("Concept not found for journal " + journalCode);
@@ -380,10 +380,12 @@ public class DryadEmailSubmission extends HttpServlet {
                 throw new SubmissionException("Journal " + journalCode + " parsing scheme not found");
             }
 
-            if ((manuscript != null) && (manuscript.isValid())) {
-                String filename = JournalUtils.escapeFilename(manuscript.manuscriptId + ".xml");
-                parser.writeManuscriptToXMLFile(new File(JournalUtils.getMetadataDir(concept), filename));
-                parser.writeManuscriptToDB();
+            if ((manuscript != null) && (JournalUtils.manuscriptIsValid(context, manuscript))) {
+                // edit the manuscript ID to the canonical one:
+                manuscript.manuscriptId = JournalUtils.getCanonicalManuscriptID(context, manuscript);
+
+                JournalUtils.writeManuscriptToXMLFile(context, manuscript);
+                JournalUtils.writeManuscriptToDB(context, manuscript);
             } else {
                 throw new SubmissionException("Parser could not validly parse the message");
             }

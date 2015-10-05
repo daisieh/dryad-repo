@@ -184,6 +184,31 @@ public class JournalUtils {
         return null;
     }
 
+    public static String getCanonicalManuscriptID(Context context, Manuscript manuscript) {
+        String canonicalID = manuscript.manuscriptId;
+        String regex = null;
+        try {
+            Concept concept = getJournalConceptByShortID(context, manuscript.organization.organizationCode);
+            AuthorityMetadataValue[] vals = concept.getMetadata("journal","manuscriptNumberIgnorePattern",null, Item.ANY);
+            if(vals != null && vals.length > 0) {
+                regex = vals[0].getValue();
+                Matcher manuscriptMatcher = Pattern.compile(regex).matcher(canonicalID);
+                if (manuscriptMatcher.find()) {
+                    canonicalID = manuscriptMatcher.group(1);
+                } else {
+                    canonicalID = null;
+                }
+            }
+        } catch(Exception e) {
+            log.error(e.getMessage(),e);
+        }
+        return canonicalID;
+    }
+
+    public static Boolean manuscriptIsValid(Context context, Manuscript manuscript) {
+        Boolean result = manuscript.isValid() && (getCanonicalManuscriptID(context, manuscript) != null);
+        return result;
+    }
 
     public static String getFullName(Concept concept) {
         AuthorityMetadataValue[] vals = concept.getMetadata("journal","fullname",null, Item.ANY);
