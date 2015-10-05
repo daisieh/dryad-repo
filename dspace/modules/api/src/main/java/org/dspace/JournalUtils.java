@@ -197,7 +197,8 @@ public class JournalUtils {
         return null;
     }
 
-    public static String getCanonicalManuscriptID(Concept concept, Manuscript manuscript) {
+    public static String getCanonicalManuscriptID(Context context, Manuscript manuscript) {
+        Concept concept = getJournalConceptByShortID(context, manuscript.organization.organizationCode);
         String canonicalID = manuscript.manuscriptId;
         String regex = null;
         try {
@@ -207,12 +208,19 @@ public class JournalUtils {
                 Matcher manuscriptMatcher = Pattern.compile(regex).matcher(canonicalID);
                 if (manuscriptMatcher.find()) {
                     canonicalID = manuscriptMatcher.group(1);
+                } else {
+                    canonicalID = null;
                 }
             }
         } catch(Exception e) {
             log.error(e.getMessage(),e);
         }
         return canonicalID;
+    }
+
+    public static Boolean manuscriptIsValid(Context context, Manuscript manuscript) {
+        Boolean result = manuscript.isValid() && (getCanonicalManuscriptID(context, manuscript) != null);
+        return result;
     }
 
     public static String getFullName(Concept concept) {
