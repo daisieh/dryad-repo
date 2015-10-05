@@ -451,7 +451,6 @@ public class JournalUtils {
     public static Map<String, String> findJournalProperties(Context c, String journal){
         Map<String, String> myJournalProperties = new HashMap<String, String>();
 
-
         try {
             String publicationNameProp = ConfigurationManager.getProperty("solrauthority.searchscheme.prism_publicationName");
             Scheme scheme = Scheme.findByIdentifier(c, publicationNameProp);
@@ -491,7 +490,7 @@ public class JournalUtils {
 
     public static void writeManuscriptToXMLFile(Context context, Manuscript manuscript) throws StorageException{
         try {
-            log.info ("looking for metadatadir for " + manuscript.organization.organizationCode);
+            log.debug ("looking for metadatadir for " + manuscript.organization.organizationCode);
             Concept concept = JournalUtils.getJournalConceptByShortID(context, manuscript.organization.organizationCode);
             if (concept != null) {
                 String filename = JournalUtils.escapeFilename(manuscript.manuscriptId + ".xml");
