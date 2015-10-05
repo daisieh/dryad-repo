@@ -492,7 +492,7 @@ public class JournalUtils {
     public static void writeManuscriptToXMLFile(Context context, Manuscript manuscript) throws StorageException{
         try {
             log.info ("looking for metadatadir for " + manuscript.organization.organizationCode);
-            Concept concept = JournalUtils.getJournalConceptById(context, manuscript.organization.organizationCode);
+            Concept concept = JournalUtils.getJournalConceptByShortID(context, manuscript.organization.organizationCode);
             if (concept == null) {
                 log.info ("couldn't find concept");
             }
