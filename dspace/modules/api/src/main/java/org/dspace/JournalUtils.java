@@ -198,10 +198,10 @@ public class JournalUtils {
     }
 
     public static String getCanonicalManuscriptID(Context context, Manuscript manuscript) {
-        Concept concept = getJournalConceptByShortID(context, manuscript.organization.organizationCode);
         String canonicalID = manuscript.manuscriptId;
         String regex = null;
         try {
+            Concept concept = getJournalConceptByShortID(context, manuscript.organization.organizationCode);
             AuthorityMetadataValue[] vals = concept.getMetadata("journal","manuscriptNumberIgnorePattern",null, Item.ANY);
             if(vals != null && vals.length > 0) {
                 regex = vals[0].getValue();
@@ -496,7 +496,7 @@ public class JournalUtils {
                 action == JournalUtils.RecommendedBlackoutAction.JOURNAL_NOT_INTEGRATED);
     }
 
-    public static void writeManuscriptToXMLFile(Context context, Manuscript manuscript) throws StorageException{
+    public static void writeManuscriptToXMLFile(Context context, Manuscript manuscript) throws StorageException {
         try {
             log.debug ("looking for metadatadir for " + manuscript.organization.organizationCode);
             Concept concept = JournalUtils.getJournalConceptByShortID(context, manuscript.organization.organizationCode);
