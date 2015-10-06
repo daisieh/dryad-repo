@@ -566,7 +566,7 @@ public class JournalUtils {
         return journalCode.replaceAll("[^a-zA-Z0-9]", "").toUpperCase();
     }
 
-    public static Item getItemForManuscript (Manuscript manuscript) {
-
-    }
+//    public static Item getItemForManuscript (Manuscript manuscript) {
+//
+//    }
 }
