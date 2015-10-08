@@ -10,6 +10,8 @@ import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
 import org.dspace.core.Email;
 import org.dspace.core.I18nUtil;
+import org.dspace.workflow.ApproveRejectReviewItem;
+import org.dspace.workflow.ApproveRejectReviewItemException;
 
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -378,6 +380,7 @@ public class DryadEmailSubmission extends HttpServlet {
                 parser = getEmailParser(JournalUtils.getParsingScheme(concept));
                 parser.parseMessage(dryadContent);
                 manuscript = parser.getManuscript();
+                manuscript.organization.organizationCode = journalCode;
             } catch (SubmissionException e) {
                 throw new SubmissionException("Journal " + journalCode + " parsing scheme not found");
             }
@@ -386,8 +389,41 @@ public class DryadEmailSubmission extends HttpServlet {
                 manuscript.manuscriptId = JournalUtils.getCanonicalManuscriptID(context, manuscript);
 
                 JournalUtils.writeManuscriptToDB(context, manuscript);
+                LOGGER.debug ("this ms has status " + manuscript.status);
+                if (manuscript.status.equals(Manuscript.STATUS_SUBMITTED)) {
+                    // if this is a submission:
+                    JournalUtils.writeManuscriptToDB(context, manuscript);
+                } else {
+                    Boolean approved = null;
 
-                JournalUtils.writeManuscriptToXMLFile(context, manuscript);
+                    if (manuscript.status.equals(Manuscript.STATUS_ACCEPTED)) {
+                        approved = true;
+                    } else if (manuscript.status.equals(Manuscript.STATUS_REJECTED)) {
+                        approved = false;
+                    } else if (manuscript.status.equals(Manuscript.STATUS_NEEDS_REVISION)) {
+                        approved = false;
+                    } else if (manuscript.status.equals(Manuscript.STATUS_PUBLISHED)) {
+                        approved = true;
+                    }
+
+                    if (approved != null) {
+                        try {
+                            if (manuscript.dryadDataDOI != null) {
+                                LOGGER.debug("running ApproveRejectReview ("+approved + ", " + manuscript.dryadDataDOI + ")");
+                                ApproveRejectReviewItem.reviewItemDOI(approved, manuscript.dryadDataDOI);
+                            } else if (manuscript.manuscriptId != null) {
+                                LOGGER.debug("running ApproveRejectReview Item (" + approved + ", " + manuscript.manuscriptId + ")");
+                                ApproveRejectReviewItem.reviewItem(approved, manuscript.manuscriptId);
+                            } else {
+                                LOGGER.debug("need to look for ms in workflow");
+                                // we need to compare manuscript's authors with workflow items from the same journal.
+                            }
+                        } catch (ApproveRejectReviewItemException e) {
+                            // somehow we need to note that this item did not find a match
+                            throw new ApproveRejectReviewItemException("Could not process " + journalCode + ":manuscript " + manuscript.manuscriptId + " for status " + manuscript.status, e);
+                        }
+                    }
+                }
             } else {
                 throw new SubmissionException("Parser could not validly parse the message");
             }

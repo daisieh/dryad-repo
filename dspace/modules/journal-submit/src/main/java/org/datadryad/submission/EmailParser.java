@@ -122,6 +122,12 @@ public class EmailParser {
                 }
             }
         }
+
+        // if article status says "in review", it's the same as a submission
+        if (dataForXML.get(ARTICLE_STATUS).equalsIgnoreCase("in review")) {
+            dataForXML.put(ARTICLE_STATUS,Manuscript.STATUS_SUBMITTED);
+        }
+
         // remove any unnecessary tags
         dataForXML.remove(UNNECESSARY);
 
@@ -170,6 +176,10 @@ public class EmailParser {
         manuscript.keywords.addAll(parseClassificationList((String) dataForXML.remove(CLASSIFICATION)));
         manuscript.manuscriptId = (String) dataForXML.remove(MANUSCRIPT);
         manuscript.status = dataForXML.remove(ARTICLE_STATUS).toLowerCase();
+        if (!Manuscript.MANUSCRIPT_STATUSES.contains(manuscript.status)) {
+            manuscript.status = Manuscript.STATUS_SUBMITTED;
+        }
+
         manuscript.title = (String) dataForXML.remove(ARTICLE_TITLE);
         manuscript.publicationDOI = null;
         manuscript.publicationDate = null;
