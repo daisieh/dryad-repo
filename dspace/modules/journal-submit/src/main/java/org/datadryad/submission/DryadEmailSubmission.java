@@ -382,15 +382,10 @@ public class DryadEmailSubmission extends HttpServlet {
             if ((manuscript != null) && (JournalUtils.manuscriptIsValid(context, manuscript))) {
                 // edit the manuscript ID to the canonical one:
                 manuscript.manuscriptId = JournalUtils.getCanonicalManuscriptID(context, manuscript);
-                LOGGER.debug("hello3");
-                LOGGER.debug("ms has keywords " + manuscript.keywords.keyword.toString());
 
                 JournalUtils.writeManuscriptToDB(context, manuscript);
-                LOGGER.debug("ms still has keywords " + manuscript.keywords.keyword.toString());
 
-                LOGGER.debug("hello4");
                 JournalUtils.writeManuscriptToXMLFile(context, manuscript);
-                LOGGER.debug("ms still still has keywords " + manuscript.keywords.keyword.toString());
             } else {
                 throw new SubmissionException("Parser could not validly parse the message");
             }
