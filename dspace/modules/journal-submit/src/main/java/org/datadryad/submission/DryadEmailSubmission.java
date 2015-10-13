@@ -12,6 +12,8 @@ import org.dspace.core.Email;
 import org.dspace.core.I18nUtil;
 import org.dspace.workflow.ApproveRejectReviewItem;
 import org.dspace.workflow.ApproveRejectReviewItemException;
+import org.dspace.servicemanager.DSpaceKernelImpl;
+import org.dspace.servicemanager.DSpaceKernelInit;
 
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -390,38 +392,52 @@ public class DryadEmailSubmission extends HttpServlet {
 
                 JournalUtils.writeManuscriptToDB(context, manuscript);
                 LOGGER.debug ("this ms has status " + manuscript.status);
-                if (manuscript.status.equals(Manuscript.STATUS_SUBMITTED)) {
-                    // if this is a submission:
-                    JournalUtils.writeManuscriptToDB(context, manuscript);
-                } else {
-                    Boolean approved = null;
+                Boolean approved = null;
 
-                    if (manuscript.status.equals(Manuscript.STATUS_ACCEPTED)) {
-                        approved = true;
-                    } else if (manuscript.status.equals(Manuscript.STATUS_REJECTED)) {
-                        approved = false;
-                    } else if (manuscript.status.equals(Manuscript.STATUS_NEEDS_REVISION)) {
-                        approved = false;
-                    } else if (manuscript.status.equals(Manuscript.STATUS_PUBLISHED)) {
-                        approved = true;
-                    }
+                if (manuscript.status.equals(Manuscript.STATUS_ACCEPTED)) {
+                    approved = true;
+                } else if (manuscript.status.equals(Manuscript.STATUS_REJECTED)) {
+                    approved = false;
+                } else if (manuscript.status.equals(Manuscript.STATUS_NEEDS_REVISION)) {
+                    approved = false;
+                } else if (manuscript.status.equals(Manuscript.STATUS_PUBLISHED)) {
+                    approved = true;
+                }
 
-                    if (approved != null) {
+                if (approved != null) {
+                    try {
+                        DSpaceKernelImpl kernelImpl = null;
                         try {
-                            if (manuscript.dryadDataDOI != null) {
-                                LOGGER.debug("running ApproveRejectReview ("+approved + ", " + manuscript.dryadDataDOI + ")");
-                                ApproveRejectReviewItem.reviewItemDOI(approved, manuscript.dryadDataDOI);
-                            } else if (manuscript.manuscriptId != null) {
-                                LOGGER.debug("running ApproveRejectReview Item (" + approved + ", " + manuscript.manuscriptId + ")");
-                                ApproveRejectReviewItem.reviewItem(approved, manuscript.manuscriptId);
-                            } else {
-                                LOGGER.debug("need to look for ms in workflow");
-                                // we need to compare manuscript's authors with workflow items from the same journal.
+                            kernelImpl = DSpaceKernelInit.getKernel(null);
+                            if (!kernelImpl.isRunning())
+                            {
+                                kernelImpl.start(ConfigurationManager.getProperty("dspace.dir"));
                             }
-                        } catch (ApproveRejectReviewItemException e) {
-                            // somehow we need to note that this item did not find a match
-                            throw new ApproveRejectReviewItemException("Could not process " + journalCode + ":manuscript " + manuscript.manuscriptId + " for status " + manuscript.status, e);
+                        } catch (Exception ex) {
+                            // Failed to start so destroy it and log and throw an exception
+                            try {
+                                if(kernelImpl != null) {
+                                    kernelImpl.destroy();
+                                }
+                            } catch (Exception e1) {
+                                // Nothing to do
+                            }
+                            LOGGER.error("Error Initializing DSpace kernel in ManuscriptReviewStatusChangeHandler", ex);
                         }
+
+                        if (manuscript.dryadDataDOI != null) {
+                            LOGGER.debug("running ApproveRejectReview ("+approved + ", " + manuscript.dryadDataDOI + ")");
+                            ApproveRejectReviewItem.reviewItemDOI(approved, manuscript.dryadDataDOI);
+                        } else if (manuscript.manuscriptId != null) {
+                            LOGGER.debug("running ApproveRejectReview Item (" + approved + ", " + manuscript.manuscriptId + ")");
+                            ApproveRejectReviewItem.reviewItem(approved, manuscript.manuscriptId);
+                        } else {
+                            LOGGER.debug("need to look for ms in workflow");
+                            // we need to compare manuscript's authors with workflow items from the same journal.
+                        }
+                    } catch (ApproveRejectReviewItemException e) {
+                        // somehow we need to note that this item did not find a match
+                        throw new ApproveRejectReviewItemException("Could not process " + journalCode + ":manuscript " + manuscript.manuscriptId + " for status " + manuscript.status, e);
                     }
                 }
             } else {
