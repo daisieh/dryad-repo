@@ -7,6 +7,7 @@ import org.dspace.core.Context;
 import org.dspace.discovery.SearchService;
 import org.dspace.utils.DSpace;
 import org.dspace.workflow.actions.WorkflowActionConfig;
+import org.apache.log4j.Logger;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
@@ -29,7 +30,7 @@ import org.dspace.identifier.IdentifierService;
  * Updated by dcl9 (dan.leehr@nescent.org) 04-Sep-2014 - exposing reviewItem as static methods
  */
 public class ApproveRejectReviewItem {
-
+    private static final Logger log = Logger.getLogger(ApproveRejectReviewItem.class);
     public static void main(String[] args) throws ApproveRejectReviewItemException, ParseException {
         // create an options object and populate it
         CommandLineParser parser = new PosixParser();
@@ -124,11 +125,22 @@ public class ApproveRejectReviewItem {
         try {
             c = new Context();
             c.turnOffAuthorisationSystem();
+            log.debug("hello");
             List<DSpaceObject> manuscriptItems =
                     getSearchService().search(c, "dc.identifier.manuscriptNumber: " + manuscriptNumber, 0, 2, false);
-            if(manuscriptItems.size() > 0){
-                wfi = WorkflowItem.findByItemId(c, manuscriptItems.get(0).getID());
-                reviewItem(c, approved, wfi);
+            log.debug("hello2");
+            if (manuscriptItems.size() > 0) {
+                log.debug("hello3 " + manuscriptItems.size());
+                for (DSpaceObject ms : manuscriptItems) {
+                    wfi = WorkflowItem.findByItemId(c, ms.getID());
+                    if (wfi != null) {
+                        try {
+                            reviewItem(c, approved, wfi);
+                        } catch (ApproveRejectReviewItemException e) {
+                            log.debug("hey wfi " + wfi.getID() + " is not a claimed task");
+                        }
+                    }
+                }
             } else {
                 throw new ApproveRejectReviewItemException("No item found with manuscript number: " + manuscriptNumber);
             }
@@ -195,8 +207,7 @@ public class ApproveRejectReviewItem {
 
         if(wfi != null) {
             claimedTasks = ClaimedTask.findByWorkflowId(c, wfi.getID());
-	}
-
+        }
         //Check for a valid task
         // There must be a claimed actions & it must be in the review stage, else it isn't a valid workflowitem
         if(claimedTasks == null || claimedTasks.isEmpty() || !claimedTasks.get(0).getActionID().equals("reviewAction")){
