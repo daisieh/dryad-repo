@@ -73,7 +73,9 @@ public class EmailParserTest extends TestCase{
         assertEquals("Floreano, Dario", test1.get(3).fullName());
         test1 = EmailParser.parseAuthorList("Wiens, Delbert; Slaton, Michele");
         assertNotNull(test1);
-        System.out.println("test1 has " + test1.get(0).fullName());
+        for(Author a : test1) {
+            System.out.println("test1 has " + a.fullName());
+        }
         assertEquals(2,test1.size());
         assertEquals("Wiens, Delbert", test1.get(0).fullName());
         assertEquals("Slaton, Michele",test1.get(1).fullName());
