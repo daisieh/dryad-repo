@@ -284,6 +284,7 @@ public class EmailParser {
                 // although, if there was only one author and it was listed as lastname, firstname, it'd have a comma too...
                 if (authors.length == 2) {
                     authorStrings.add(authors[1] + " " + authors[0]);
+                    authors = new String[0];
                 }
             }
 
