@@ -138,6 +138,14 @@ public class EmailParserTest extends TestCase{
         assertEquals(2,test1.size());
         assertEquals("Bono, Sonny",test1.get(0).fullName());
         assertEquals("Cher",test1.get(1).fullName());
+        test1 = EmailParser.parseAuthorList("Sonny Bono and Cher");
+        assertNotNull(test1);
+        for(Author a : test1) {
+            System.out.println("test1 has " + a.fullName());
+        }
+        assertEquals(2,test1.size());
+        assertEquals("Bono, Sonny",test1.get(0).fullName());
+        assertEquals("Cher",test1.get(1).fullName());
     }
 
 
