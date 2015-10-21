@@ -72,7 +72,7 @@ public class EmailParserTest extends TestCase{
         assertEquals(4,test1.size());
         assertEquals("Lichocki, Pawel",test1.get(0).fullName());
         assertEquals("Tarapore, Danesh", test1.get(1).fullName());
-        assertEquals("Keller, Laurent",test1.get(2).fullName());
+        assertEquals("Keller, Laurent", test1.get(2).fullName());
         assertEquals("Floreano, Dario", test1.get(3).fullName());
         test1 = EmailParser.parseAuthorList("Wiens, Delbert; Slaton, Michele");
         assertNotNull(test1);
@@ -97,7 +97,7 @@ public class EmailParserTest extends TestCase{
         assertEquals(5, test1.size());
         assertEquals("Riou, Samuel",test1.get(0).fullName());
         assertEquals("Combreau, Olivier",test1.get(1).fullName());
-        assertEquals("Judas, Jacky",test1.get(2).fullName());
+        assertEquals("Judas, Jacky", test1.get(2).fullName());
         assertEquals("Lawrence, Mark",test1.get(3).fullName());
         assertEquals("Pitra, Christian",test1.get(4).fullName());
         test1 = EmailParser.parseAuthorList("Veselin Kostadinov");
@@ -115,7 +115,7 @@ public class EmailParserTest extends TestCase{
         assertEquals(3,test1.size());
         assertEquals("Garrett, Elizabeth",test1.get(0).fullName());
         assertEquals("Parker, Frances",test1.get(1).fullName());
-        assertEquals("Parker, Winslow",test1.get(2).fullName());
+        assertEquals("Parker, Winslow", test1.get(2).fullName());
         test1 = EmailParser.parseAuthorList("J. David");
         assertNotNull(test1);
         for(Author a : test1) {
@@ -130,7 +130,14 @@ public class EmailParserTest extends TestCase{
         }
         assertEquals(1,test1.size());
         assertEquals("Lacy, Robert",test1.get(0).fullName());
-
+        test1 = EmailParser.parseAuthorList("Lacy, Robert; Cher");
+        assertNotNull(test1);
+        for(Author a : test1) {
+            System.out.println("test1 has " + a.fullName());
+        }
+        assertEquals(2,test1.size());
+        assertEquals("Lacy, Robert",test1.get(0).fullName());
+        assertEquals("Cher",test1.get(0).fullName());
     }
 
 

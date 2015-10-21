@@ -259,9 +259,12 @@ public class EmailParser {
             if (namepattern.find()) {
                 author.givenNames = namepattern.group(1);
                 author.familyName = namepattern.group(2) + suffix;
+            } else {
+                // there is only one word in the name: assign it to the familyName?
+                author.familyName = authorString;
+                author.givenNames = "";
             }
         }
-        LOGGER.debug("parsed " + author.givenNames + " " + author.familyName);
         return author;
     }
 
