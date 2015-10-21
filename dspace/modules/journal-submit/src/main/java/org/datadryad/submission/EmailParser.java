@@ -262,7 +262,7 @@ public class EmailParser {
             } else {
                 // there is only one word in the name: assign it to the familyName?
                 author.familyName = authorString;
-                author.givenNames = "";
+                author.givenNames = null;
             }
         }
         return author;
