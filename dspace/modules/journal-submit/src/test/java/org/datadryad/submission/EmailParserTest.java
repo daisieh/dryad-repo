@@ -137,7 +137,7 @@ public class EmailParserTest extends TestCase{
         }
         assertEquals(2,test1.size());
         assertEquals("Bono, Sonny",test1.get(0).fullName());
-        assertEquals("Cher",test1.get(0).fullName());
+        assertEquals("Cher",test1.get(1).fullName());
     }
 
 
