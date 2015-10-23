@@ -129,7 +129,7 @@ public class ApproveRejectReviewItem {
             c.turnOffAuthorisationSystem();
 //            List<DSpaceObject> manuscriptItems =
 //                    getSearchService().search(c, "dc.identifier.manuscriptNumber: " + manuscriptNumber, 0, 2, false);
-            ItemIterator manuscriptItems = Item.findByMetadataField(c, "dc", "identifier", "manuscriptNumber", manuscriptNumber);
+            ItemIterator manuscriptItems = Item.findByMetadataField(c, "dc", "identifier", "manuscriptNumber", manuscriptNumber, false);
             if (manuscriptItems.hasNext()) {
                 while (manuscriptItems.hasNext()) {
                     Item ms = manuscriptItems.next();

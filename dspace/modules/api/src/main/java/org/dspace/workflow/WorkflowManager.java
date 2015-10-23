@@ -287,7 +287,7 @@ public class WorkflowManager {
     public static void deleteAllTasks(Context c, WorkflowItem wi) throws SQLException, AuthorizeException {
         deleteAllPooledTasks(c, wi);
 
-        List<ClaimedTask> allClaimedTasks = ClaimedTask.findByWorkflowId(c,wi.getID());
+        List<ClaimedTask> allClaimedTasks = ClaimedTask.findByWorkflowId(c, wi.getID());
         for(ClaimedTask task: allClaimedTasks){
             deleteClaimedTask(c, wi, task);
         }
@@ -320,7 +320,6 @@ public class WorkflowManager {
             EPerson e = EPerson.find(c, task.getOwnerID());
             EPerson submitter = wi.getItem().getSubmitter();
             task.delete();
-            EPerson e = EPerson.find(c, task.getOwnerID());
             removeUserItemPolicies(c, wi.getItem(), e);
             // add back the original owner's policies
             grantUserAllItemPolicies(c, wi.getItem(), submitter);
