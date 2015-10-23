@@ -317,17 +317,19 @@ public class WorkflowManager {
 
     public static void deleteClaimedTask(Context c, WorkflowItem wi, ClaimedTask task) throws SQLException, AuthorizeException {
         if(task != null){
+            EPerson e = EPerson.find(c, task.getOwnerID());
+            EPerson submitter = wi.getItem().getSubmitter();
             task.delete();
             EPerson e = EPerson.find(c, task.getOwnerID());
             removeUserItemPolicies(c, wi.getItem(), e);
             // add back the original owner's policies
-            grantUserAllItemPolicies(c, wi.getItem(), e);
+            grantUserAllItemPolicies(c, wi.getItem(), submitter);
             //Also make sure that the user gets policies on our data files
             Item[] dataFiles = DryadWorkflowUtils.getDataFiles(c, wi.getItem());
             for (Item dataFile : dataFiles) {
                 removeUserItemPolicies(c, dataFile, e);
                 // add back the original owner's policies
-                grantUserAllItemPolicies(c, dataFile, e);
+                grantUserAllItemPolicies(c, dataFile, submitter);
             }
         }
     }
@@ -406,10 +408,10 @@ public class WorkflowManager {
     }
 
     private static void addPolicyToItem(Context context, Item item, int type, EPerson epa) throws AuthorizeException, SQLException {
-        AuthorizeManager.addPolicy(context ,item, type, epa);
+        AuthorizeManager.addPolicy(context, item, type, epa);
         Bundle[] bundles = item.getBundles();
         for (Bundle bundle : bundles) {
-            AuthorizeManager.addPolicy(context ,bundle, type, epa);
+            AuthorizeManager.addPolicy(context, bundle, type, epa);
             Bitstream[] bits = bundle.getBitstreams();
             for (Bitstream bit : bits) {
                 AuthorizeManager.addPolicy(context, bit, type, epa);
@@ -436,11 +438,12 @@ public class WorkflowManager {
         List<ResourcePolicy> policies = AuthorizeManager.getPolicies(context, item);
         AuthorizeManager.removeAllPolicies(context, item);
         for (ResourcePolicy resourcePolicy : policies) {
-            if( resourcePolicy.getEPerson() ==null || resourcePolicy.getEPersonID() != e.getID()){
-                if(resourcePolicy.getEPerson() != null)
+            if ((e != null) && (resourcePolicy.getEPerson() != null)) {
+                if(resourcePolicy.getEPersonID() != e.getID()) {
                     AuthorizeManager.addPolicy(context, item, resourcePolicy.getAction(), resourcePolicy.getEPerson());
-                else
+                } else {
                     AuthorizeManager.addPolicy(context, item, resourcePolicy.getAction(), resourcePolicy.getGroup());
+                }
             }
         }
     }
@@ -509,6 +512,7 @@ public class WorkflowManager {
             myitem.addMetadata(MetadataSchema.DC_SCHEMA, "description", "provenance", "en", provDescription);
         }
 
+        grantUserAllItemPolicies(c,myitem,e);
         myitem.update();
 
         // convert into personal workspace
