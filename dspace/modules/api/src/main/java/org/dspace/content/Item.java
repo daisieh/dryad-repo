@@ -2674,8 +2674,8 @@ public class Item extends DSpaceObject
                     "No such metadata field: schema=" + schema + ", element=" + element + ", qualifier=" + qualifier);
         }
 
-        String query = "SELECT item.* FROM metadatavalue,item WHERE item.in_archive='1' "+
-                "AND item.item_id = metadatavalue.item_id AND metadata_field_id = ?";
+        String query = "SELECT item.* FROM metadatavalue,item WHERE "+
+                "item.item_id = metadatavalue.item_id AND metadata_field_id = ?";
         TableRowIterator rows = null;
         if (Item.ANY.equals(value))
         {

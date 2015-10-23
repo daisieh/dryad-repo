@@ -3,6 +3,8 @@ package org.dspace.workflow;
 import org.apache.commons.cli.*;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.DSpaceObject;
+import org.dspace.content.Item;
+import org.dspace.content.ItemIterator;
 import org.dspace.core.Context;
 import org.dspace.discovery.SearchService;
 import org.dspace.utils.DSpace;
@@ -125,13 +127,12 @@ public class ApproveRejectReviewItem {
         try {
             c = new Context();
             c.turnOffAuthorisationSystem();
-            log.debug("hello");
-            List<DSpaceObject> manuscriptItems =
-                    getSearchService().search(c, "dc.identifier.manuscriptNumber: " + manuscriptNumber, 0, 2, false);
-            log.debug("hello2");
-            if (manuscriptItems.size() > 0) {
-                log.debug("hello3 " + manuscriptItems.size());
-                for (DSpaceObject ms : manuscriptItems) {
+//            List<DSpaceObject> manuscriptItems =
+//                    getSearchService().search(c, "dc.identifier.manuscriptNumber: " + manuscriptNumber, 0, 2, false);
+            ItemIterator manuscriptItems = Item.findByMetadataField(c, "dc", "identifier", "manuscriptNumber", manuscriptNumber);
+            if (manuscriptItems.hasNext()) {
+                while (manuscriptItems.hasNext()) {
+                    Item ms = manuscriptItems.next();
                     wfi = WorkflowItem.findByItemId(c, ms.getID());
                     if (wfi != null) {
                         try {
