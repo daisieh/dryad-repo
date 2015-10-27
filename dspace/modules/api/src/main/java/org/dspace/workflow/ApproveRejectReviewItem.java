@@ -40,7 +40,7 @@ public class ApproveRejectReviewItem {
         Options options = new Options();
 
         options.addOption("m", "manuscriptnumber", true, "The manuscript number");
-	options.addOption("i", "wfitemid", true, "The workflow item id");
+	    options.addOption("i", "wfitemid", true, "The workflow item id");
         options.addOption("a", "approved", true, "Whether or not the the application will be approved, can either be true or false");
         options.addOption("h", "help", false, "help");
 
@@ -62,51 +62,48 @@ public class ApproveRejectReviewItem {
         }
 
         if(line.hasOption('m')){
-	    // get a WorkflowItem using a manuscript number
-	    String manuscriptNumber = line.getOptionValue('m');
+	        // get a WorkflowItem using a manuscript number
+	        String manuscriptNumber = line.getOptionValue('m');
             reviewItem(approved, manuscriptNumber);
-	} else if(line.hasOption('i')) {
-	    // get a WorkflowItem using a workflow ID
-	    Integer wfItemId = Integer.parseInt(line.getOptionValue('i'));
-	    reviewItem(approved, wfItemId);
-	} else {
+        } else if(line.hasOption('i')) {
+            // get a WorkflowItem using a workflow ID
+            Integer wfItemId = Integer.parseInt(line.getOptionValue('i'));
+            reviewItem(approved, wfItemId);
+        } else {
             System.out.println("No manuscript number or workflow ID was given. One of these must be provided to identify the correct item in the review stage.");
             System.exit(1);
             return;
         }
     }
 
-    public static void reviewItemDOI(Boolean approved, String dataPackageDOI) throws ApproveRejectReviewItemException  {
+    public static void reviewItemDOI(Boolean approved, String dataPackageDOI) throws ApproveRejectReviewItemException {
         WorkflowItem wfi = null;
         Context c = null;
         try {
             c = new Context();
             c.turnOffAuthorisationSystem();
             IdentifierService identifierService = getIdentifierService();
-            DSpaceObject object = identifierService.resolve(c, dataPackageDOI);
-            if(object == null) {
-                throw new ApproveRejectReviewItemException("DOI " + dataPackageDOI + " resolved to null item");
-            }
-            if(object.getType() != Constants.ITEM) {
-                throw new ApproveRejectReviewItemException("DOI " + dataPackageDOI + " resolved to a non item DSpace Object");
+            DSpaceObject object = null;
+            try {
+                object = identifierService.resolve(c, dataPackageDOI);
+                if (object == null) {
+                    throw new ApproveRejectReviewItemException("DOI " + dataPackageDOI + " resolved to null item");
+                }
+                if (object.getType() != Constants.ITEM) {
+                    throw new ApproveRejectReviewItemException("DOI " + dataPackageDOI + " resolved to a non item DSpace Object");
+                }
+            } catch (IdentifierNotFoundException ex) {
+                throw new ApproveRejectReviewItemException(ex);
+            } catch (IdentifierNotResolvableException ex) {
+                throw new ApproveRejectReviewItemException(ex);
             }
             wfi = WorkflowItem.findByItemId(c, object.getID());
             reviewItem(c, approved, wfi);
-        } catch (SQLException ex) {
-            throw new ApproveRejectReviewItemException(ex);
-        } catch (IdentifierNotFoundException ex) {
-            throw new ApproveRejectReviewItemException(ex);
-        } catch (IdentifierNotResolvableException ex) {
-            throw new ApproveRejectReviewItemException(ex);
         } catch (AuthorizeException ex) {
             throw new ApproveRejectReviewItemException(ex);
-        } catch (WorkflowConfigurationException ex) {
+        } catch (SQLException ex) {
             throw new ApproveRejectReviewItemException(ex);
         } catch (IOException ex) {
-            throw new ApproveRejectReviewItemException(ex);
-        } catch (MessagingException ex) {
-            throw new ApproveRejectReviewItemException(ex);
-        } catch (WorkflowException ex) {
             throw new ApproveRejectReviewItemException(ex);
         } finally {
             if(c != null) {
@@ -127,8 +124,6 @@ public class ApproveRejectReviewItem {
         try {
             c = new Context();
             c.turnOffAuthorisationSystem();
-//            List<DSpaceObject> manuscriptItems =
-//                    getSearchService().search(c, "dc.identifier.manuscriptNumber: " + manuscriptNumber, 0, 2, false);
             ItemIterator manuscriptItems = Item.findByMetadataField(c, "dc", "identifier", "manuscriptNumber", manuscriptNumber, false);
             if (manuscriptItems.hasNext()) {
                 while (manuscriptItems.hasNext()) {
@@ -149,13 +144,7 @@ public class ApproveRejectReviewItem {
             throw new ApproveRejectReviewItemException(ex);
         } catch (AuthorizeException ex) {
             throw new ApproveRejectReviewItemException(ex);
-        } catch (WorkflowConfigurationException ex) {
-            throw new ApproveRejectReviewItemException(ex);
         } catch (IOException ex) {
-            throw new ApproveRejectReviewItemException(ex);
-        } catch (MessagingException ex) {
-            throw new ApproveRejectReviewItemException(ex);
-        } catch (WorkflowException ex) {
             throw new ApproveRejectReviewItemException(ex);
         } finally {
             if(c != null) {
@@ -181,13 +170,7 @@ public class ApproveRejectReviewItem {
             throw new ApproveRejectReviewItemException(ex);
         } catch (AuthorizeException ex) {
             throw new ApproveRejectReviewItemException(ex);
-        } catch (WorkflowConfigurationException ex) {
-            throw new ApproveRejectReviewItemException(ex);
         } catch (IOException ex) {
-            throw new ApproveRejectReviewItemException(ex);
-        } catch (MessagingException ex) {
-            throw new ApproveRejectReviewItemException(ex);
-        } catch (WorkflowException ex) {
             throw new ApproveRejectReviewItemException(ex);
         } finally {
             if(c != null) {
@@ -202,26 +185,38 @@ public class ApproveRejectReviewItem {
         }
     }
 
-    private static void reviewItem(Context c, Boolean approved, WorkflowItem wfi) throws SQLException, IOException, WorkflowConfigurationException, AuthorizeException, MessagingException, WorkflowException, ApproveRejectReviewItemException {
+    private static void reviewItem(Context c, Boolean approved, WorkflowItem wfi) throws ApproveRejectReviewItemException {
 	// get a List of ClaimedTasks, using the WorkflowItem
         List<ClaimedTask> claimedTasks = null;
+        try {
+            if (wfi != null) {
+                claimedTasks = ClaimedTask.findByWorkflowId(c, wfi.getID());
+            }
+            //Check for a valid task
+            // There must be a claimed actions & it must be in the review stage, else it isn't a valid workflowitem
+            if (claimedTasks == null || claimedTasks.isEmpty() || !claimedTasks.get(0).getActionID().equals("reviewAction")) {
+                throw new ApproveRejectReviewItemException("Item not found or not in review");
+            } else {
+                ClaimedTask claimedTask = claimedTasks.get(0);
+                Workflow workflow = WorkflowFactory.getWorkflow(wfi.getCollection());
+                WorkflowActionConfig actionConfig = workflow.getStep(claimedTask.getStepID()).getActionConfig(claimedTask.getActionID());
 
-        if(wfi != null) {
-            claimedTasks = ClaimedTask.findByWorkflowId(c, wfi.getID());
-        }
-        //Check for a valid task
-        // There must be a claimed actions & it must be in the review stage, else it isn't a valid workflowitem
-        if(claimedTasks == null || claimedTasks.isEmpty() || !claimedTasks.get(0).getActionID().equals("reviewAction")){
-            throw new ApproveRejectReviewItemException("Item not found or not in review");
-        } else {
-            ClaimedTask claimedTask = claimedTasks.get(0);
-            Workflow workflow = WorkflowFactory.getWorkflow(wfi.getCollection());
-            WorkflowActionConfig actionConfig = workflow.getStep(claimedTask.getStepID()).getActionConfig(claimedTask.getActionID());
+                wfi.getItem().addMetadata(WorkflowRequirementsManager.WORKFLOW_SCHEMA, "step", "approved", null, approved.toString());
 
-            wfi.getItem().addMetadata(WorkflowRequirementsManager.WORKFLOW_SCHEMA, "step", "approved", null, approved.toString());
-
-            WorkflowManager.doState(c, c.getCurrentUser(), null, claimedTask.getWorkflowItemID(), workflow, actionConfig);
-
+                WorkflowManager.doState(c, c.getCurrentUser(), null, claimedTask.getWorkflowItemID(), workflow, actionConfig);
+            }
+        } catch (SQLException ex) {
+            throw new ApproveRejectReviewItemException(ex);
+        } catch (AuthorizeException ex) {
+            throw new ApproveRejectReviewItemException(ex);
+        } catch (WorkflowConfigurationException ex) {
+            throw new ApproveRejectReviewItemException(ex);
+        } catch (IOException ex) {
+            throw new ApproveRejectReviewItemException(ex);
+        } catch (MessagingException ex) {
+            throw new ApproveRejectReviewItemException(ex);
+        } catch (WorkflowException ex) {
+            throw new ApproveRejectReviewItemException(ex);
         }
     }
 
