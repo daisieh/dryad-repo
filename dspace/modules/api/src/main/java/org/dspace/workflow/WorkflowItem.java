@@ -174,7 +174,7 @@ public class WorkflowItem implements InProgressSubmission {
         return wfArray;
     }
 
-    public static WorkflowItem[] findAllByJournal(Context c, String journalName) throws SQLException, AuthorizeException, IOException {
+    public static WorkflowItem[] findAllByJournalName(Context c, String journalName) throws SQLException, AuthorizeException, IOException {
         List<WorkflowItem> wfItems = new ArrayList<WorkflowItem>();
 
         TableRowIterator tri = DatabaseManager.queryTable(c, "workflowitem",

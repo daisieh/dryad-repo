@@ -14,6 +14,7 @@ import org.dspace.workflow.ApproveRejectReviewItem;
 import org.dspace.workflow.ApproveRejectReviewItemException;
 import org.dspace.servicemanager.DSpaceKernelImpl;
 import org.dspace.servicemanager.DSpaceKernelInit;
+import org.dspace.workflow.WorkflowItem;
 
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -378,6 +379,7 @@ public class DryadEmailSubmission extends HttpServlet {
             }
 
             // at this point, concept is not null.
+            journalName = concept.getFullName(context);
             try {
                 parser = getEmailParser(JournalUtils.getParsingScheme(concept));
                 parser.parseMessage(dryadContent);
@@ -434,6 +436,7 @@ public class DryadEmailSubmission extends HttpServlet {
                         } else {
                             LOGGER.debug("need to look for ms in workflow");
                             // we need to compare manuscript's authors with workflow items from the same journal.
+                            WorkflowItem[] workflowItems = WorkflowItem.findAllByJournalName(context, journalName);
                         }
                     } catch (ApproveRejectReviewItemException e) {
                         // somehow we need to note that this item did not find a match
