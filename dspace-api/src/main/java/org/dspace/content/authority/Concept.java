@@ -268,7 +268,7 @@ public class Concept extends AuthorityObject
 
         // Remove any mappings
         DatabaseManager.updateQuery(myContext,
-                "DELETE FROM concept2term WHERE concept_id= ? "+
+                "DELETE FROM concept2term WHERE concept_id= ? " +
                         "AND term_id= ? AND role_id=1", getID(), t.getID());
 
         DatabaseManager.setConstraintImmediate(myContext, "concept2term_term_id_fkey");
@@ -465,9 +465,15 @@ public class Concept extends AuthorityObject
     }
 
     public String getFullName(Context context) throws SQLException, AuthorizeException {
-        MetadataField mdf = MetadataField.findByElement(context, MetadataSchema.find(context, "journal").getSchemaID(), "fullName", null);
+        MetadataSchema mds = MetadataSchema.find(context, "journal");
+        MetadataField mdf = MetadataField.findByElement(context, mds.getSchemaID(), "fullname", null);
+        log.debug("journal fullname field ID is " + mdf.getFieldID());
         TableRowIterator row = DatabaseManager.query(context, "select cmv.text_value from concept as c, conceptmetadatavalue as cmv where cmv.parent_id = c.id and c.id=? and cmv.field_id=?", this.getID(), mdf.getFieldID());
-        return row.getStringColumn("text_value");
+        String result = null;
+        if (row.hasNext()) {
+            result = row.next().getStringColumn("text_value");
+        }
+        return result;
     }
 
     /**
