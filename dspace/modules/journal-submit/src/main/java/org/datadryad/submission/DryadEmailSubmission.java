@@ -461,6 +461,26 @@ public class DryadEmailSubmission extends HttpServlet {
         }
     }
 
+    private WorkflowItem[] findMatchingWorkflowItems(Context context, Manuscript manuscript) {
+        String journalName = manuscript.organization.organizationName;
+        WorkflowItem[] workflowItems = WorkflowItem.findAllByJournalName(context, journalName);
+
+        ArrayList<WorkflowItem> matchingItems = new ArrayList<WorkflowItem>();
+        for (int i=0;i<workflowItems.length;i++) {
+            Item item = workflowItems[i].getItem();
+            DCValue[] itemAuthors = item.getMetadata("dc", "contributor", "author", Item.ANY);
+            for (int j=0;j<itemAuthors.length;j++) {
+                for (Author a : manuscript.authors.author) {
+                    int score = JournalUtils.computeLevenshteinDistance(itemAuthors[j].value, a.fullName());
+                    if (score > 0.7) {
+                        matchingItems.add(workflowItems[i]);
+                    }
+                }
+            }
+        }
+        return matchingItems.toArray(new WorkflowItem[matchingItems.size()]);
+    }
+
     private EmailParser getEmailParser(String myParsingScheme) throws SubmissionException {
         String className = EmailParser.class.getPackage().getName()
                 + ".EmailParserFor" + StringUtils.capitalize(myParsingScheme);
