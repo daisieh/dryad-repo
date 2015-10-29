@@ -121,6 +121,9 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
         if(row != null) {
             String json_data = row.getStringColumn(COLUMN_JSON_DATA);
             Manuscript manuscript = reader.readValue(json_data);
+            if (manuscript.organization == null) {
+                manuscript.organization = new Organization();
+            }
             return manuscript;
         } else {
             return null;
@@ -193,8 +196,10 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
             String query = "SELECT * FROM MANUSCRIPT WHERE msid = ? and organization_id = ? and active = ?";
             TableRow row = DatabaseManager.querySingleTable(context, MANUSCRIPT_TABLE, query, msid, organizationId, ACTIVE_TRUE);
             Manuscript manuscript = manuscriptFromTableRow(row);
-            manuscript.organization.organizationCode = organizationCode;
-//            manuscript.organization = getOrganizationFromInternalId(context, organizationId);
+            if (manuscript == null) {
+                return null;
+            }
+            manuscript.organization = getOrganizationFromInternalId(context, organizationId);
             return manuscript;
         }
     }

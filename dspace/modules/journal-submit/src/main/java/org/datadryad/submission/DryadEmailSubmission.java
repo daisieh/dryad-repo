@@ -386,19 +386,18 @@ public class DryadEmailSubmission extends HttpServlet {
 
             // at this point, concept is not null.
             journalName = concept.getFullName(context);
-            manuscript.organization.organizationName = journalName;
             try {
                 parser = getEmailParser(JournalUtils.getParsingScheme(concept));
                 parser.parseMessage(dryadContent);
                 manuscript = parser.getManuscript();
                 manuscript.organization.organizationCode = journalCode;
+                manuscript.organization.organizationName = journalName;
             } catch (SubmissionException e) {
                 throw new SubmissionException("Journal " + journalCode + " parsing scheme not found");
             }
             if ((manuscript != null) && (JournalUtils.manuscriptIsValid(context, manuscript))) {
                 // edit the manuscript ID to the canonical one:
                 manuscript.manuscriptId = JournalUtils.getCanonicalManuscriptID(context, manuscript);
-
                 JournalUtils.writeManuscriptToDB(context, manuscript);
                 LOGGER.debug ("this ms has status " + manuscript.status);
                 Boolean approved = null;
