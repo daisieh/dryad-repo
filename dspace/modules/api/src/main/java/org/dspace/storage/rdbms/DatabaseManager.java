@@ -1762,7 +1762,7 @@ public class DatabaseManager
 
         if (log.isDebugEnabled())
         {
-            log.debug("Running query \"" + sql + "\"" + " with vals " + paramstr);
+            log.debug("Running query \"" + sql + "\"" + " with vals " + row.toString());
         }
 
         ResultSet rs = null;
