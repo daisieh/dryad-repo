@@ -1699,6 +1699,7 @@ public class DatabaseManager
 
         Collection<ColumnInfo> info = getColumnInfo(table);
         Collection<ColumnInfo> params = new ArrayList<ColumnInfo>();
+        String paramstr = "";
 
         String primaryKey = getPrimaryKeyColumn(table);
         String sql = insertSQL.get(table);
@@ -1733,6 +1734,7 @@ public class DatabaseManager
                 {
                     valuesBuilder.append('?');
                     params.add(col);
+                    paramstr = paramstr + ", " + col.getName();
                 }
             }
 
@@ -1751,6 +1753,7 @@ public class DatabaseManager
                 else
                 {
                     params.add(col);
+                    paramstr = paramstr + ", " + col.getName();
                 }
             }            
         }
@@ -1759,7 +1762,7 @@ public class DatabaseManager
 
         if (log.isDebugEnabled())
         {
-            log.debug("Running query \"" + sql + "\"" + " with vals " + params.toString());
+            log.debug("Running query \"" + sql + "\"" + " with vals " + paramstr);
         }
 
         ResultSet rs = null;
