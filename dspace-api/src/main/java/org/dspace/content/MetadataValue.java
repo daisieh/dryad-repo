@@ -274,8 +274,8 @@ public class MetadataValue
         // Remember the new row number
         this.valueId = row.getIntColumn("metadata_value_id");
 
-//        log.info(LogManager.getHeader(context, "create_metadata_value",
-//                "metadata_value_id=" + valueId));
+        log.info(LogManager.getHeader(context, "create_metadata_value",
+                "metadata_value_id=" + valueId));
     }
 
     /**
