@@ -2882,7 +2882,7 @@ public class Item extends DSpaceObject
                     // Only write values that are not already in the db
                     if (!storedDC[dcIdx]) {
                         DCValue dcv = getMetadata().get(dcIdx);
-                        log.debug ("writing out " + dcv.value);
+                        log.debug ("writing out " + dcv.value + ", with auth " + dcv.authority + " to item " + getID());
                         // Write DCValue
                         MetadataValue metadata = new MetadataValue();
                         metadata.setItemId(internalItemId);
