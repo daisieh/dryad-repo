@@ -1648,7 +1648,6 @@ public class Item extends DSpaceObject
         {
             AuthorizeManager.authorizeAction(ourContext, this, Constants.WRITE);
         }
-        log.debug ("hi");
         log.info(LogManager.getHeader(ourContext, "update_item", "item_id="
                 + internalItemId));
 
@@ -2792,7 +2791,6 @@ public class Item extends DSpaceObject
                             {
                                 boolean matched = true;
                                 DCValue dcv   = currMetadata.get(dcIdx);
-                                log.debug ("comparing " + dcv.value + " to " + tr.getStringColumn("text_value"));
 
                                 // Check the metadata field is the same
                                 if (matched && dcFields[dcIdx].getFieldID() != tr.getIntColumn("metadata_field_id"))
@@ -2858,6 +2856,7 @@ public class Item extends DSpaceObject
                                 // If the db record is identical to the in memory values
                                 if (matched)
                                 {
+                                    log.debug ("comparing " + dcv.value + " to " + tr.getStringColumn("text_value"));
                                     // Flag that the metadata is already in the DB
                                     storedDC[dcIdx] = true;
 
@@ -2883,7 +2882,7 @@ public class Item extends DSpaceObject
                     // Only write values that are not already in the db
                     if (!storedDC[dcIdx]) {
                         DCValue dcv = getMetadata().get(dcIdx);
-
+                        log.debug ("writing out " + dcv.value);
                         // Write DCValue
                         MetadataValue metadata = new MetadataValue();
                         metadata.setItemId(internalItemId);
