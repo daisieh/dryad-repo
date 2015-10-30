@@ -1772,6 +1772,7 @@ public class DatabaseManager
         	loadParameters(statement, params, row);
             rs = statement.executeQuery();
             rs.next();
+            log.debug("returned " + rs.getInt(1));
             return rs.getInt(1);
         }
         finally
