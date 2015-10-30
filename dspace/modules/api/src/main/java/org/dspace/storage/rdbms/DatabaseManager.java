@@ -1770,8 +1770,10 @@ public class DatabaseManager
         {
             statement = context.getDBConnection().prepareStatement(sql);
         	loadParameters(statement, params, row);
+            log.debug("boo");
             rs = statement.executeQuery();
             rs.next();
+            log.debug("booboo");
             log.debug("returned " + rs.getInt(1));
             return rs.getInt(1);
         }
