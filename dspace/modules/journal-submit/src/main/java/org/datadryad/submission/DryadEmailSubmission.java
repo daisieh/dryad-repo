@@ -487,15 +487,24 @@ public class DryadEmailSubmission extends HttpServlet {
 
         ArrayList<WorkflowItem> matchingItems = new ArrayList<WorkflowItem>();
         for (int i=0;i<workflowItems.length;i++) {
+            // count number of authors and number of matched authors: if equal, this is a match.
+            int numMatched = 0;
             Item item = workflowItems[i].getItem();
             DCValue[] itemAuthors = item.getMetadata("dc", "contributor", "author", Item.ANY);
             for (int j=0;j<itemAuthors.length;j++) {
                 for (Author a : manuscript.authors.author) {
                     int score = JournalUtils.computeLevenshteinDistance(itemAuthors[j].value, a.fullName());
                     if (score > 0.7) {
-                        matchingItems.add(workflowItems[i]);
+                        numMatched++;
+                        break;
                     }
                 }
+            }
+            if (numMatched == itemAuthors.length) {
+                matchingItems.add(workflowItems[i]);
+                LOGGER.debug ("ms " + manuscript.title + " matches");
+            } else {
+                LOGGER.debug ("ms " + manuscript.title + " does not match: " + numMatched + "/" + itemAuthors.length);
             }
         }
         return matchingItems.toArray(new WorkflowItem[matchingItems.size()]);
