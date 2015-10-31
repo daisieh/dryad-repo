@@ -230,7 +230,7 @@ public class OdinsHamr extends AbstractCurationTask {
                 item.addMetadata("dc", "contributor", "author", null, auth.value, auth.authority, auth.confidence);
             }
             item.update();
-            log.info(item.getID() + ": " + handle + " done.");
+            report(item.getID() + ": " + handle + " done.");
         } catch (Exception e) {
             log.fatal("Skipping -- Exception in processing " + handle, e);
             setResult("Object has a fatal error: " + handle + "\n" + e.getMessage());
