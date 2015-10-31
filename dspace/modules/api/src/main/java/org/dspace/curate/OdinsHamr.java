@@ -211,8 +211,6 @@ public class OdinsHamr extends AbstractCurationTask {
                     Bio mappedOrcidEntry = (Bio)mappedNames.get(dspaceBio);
                     Bio mappedDSpaceEntry = createBio("", dspaceBio.value);
                     double hamrScore = hamrScore(mappedDSpaceEntry,mappedOrcidEntry);
-                    report(itemDOI + ", " + articleDOI + ", " + mappedOrcidEntry.getOrcid() + ", \"" + getName(mappedOrcidEntry) + "\", " +
-                            mappedDSpaceEntry.getOrcid() + ", \"" + getName(mappedDSpaceEntry) + "\", " + hamrScore);
 
                     // if hamrScore is greater or = to 0.7, then add this to new metadata:
 
@@ -220,6 +218,7 @@ public class OdinsHamr extends AbstractCurationTask {
                         authorMetadata.authority = AuthorityValueGenerator.GENERATE + "orcid" + AuthorityValueGenerator.SPLIT + mappedOrcidEntry.getOrcid();
                         authorMetadata.confidence = Choices.CF_UNCERTAIN;
                         item.addMetadata("dc", "description", "provenance", null, "ORCID authority added to " + getName(mappedDSpaceEntry) + " with a confidence of CF_UNCERTAIN: OdinsHamr match score " + hamrScore + " on " + DCDate.getCurrent().toString() + " (GMT)");
+                        report(handle + ", " + itemDOI + ", " + articleDOI + ", " + mappedOrcidEntry.getOrcid() + ", \"" + getName(mappedOrcidEntry) + "\", \"" + getName(mappedDSpaceEntry) + "\", " + hamrScore);
                     }
                     setResult("Last processed item = " + handle + " -- " + itemDOI);
                 }
