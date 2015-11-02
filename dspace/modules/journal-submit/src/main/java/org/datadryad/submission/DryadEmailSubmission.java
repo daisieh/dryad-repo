@@ -4,6 +4,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.datadryad.rest.models.Manuscript;
+import org.datadryad.rest.models.Author;
+import org.datadryad.rest.models.AuthorsList;
 import org.dspace.JournalUtils;
 import org.dspace.content.authority.Concept;
 import org.dspace.core.ConfigurationManager;
@@ -15,6 +17,8 @@ import org.dspace.workflow.ApproveRejectReviewItemException;
 import org.dspace.servicemanager.DSpaceKernelImpl;
 import org.dspace.servicemanager.DSpaceKernelInit;
 import org.dspace.workflow.WorkflowItem;
+import org.dspace.content.Item;
+import org.dspace.content.DCValue;
 
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -28,8 +32,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.Runtime;
+import java.lang.RuntimeException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -380,6 +386,7 @@ public class DryadEmailSubmission extends HttpServlet {
 
             // at this point, concept is not null.
             journalName = concept.getFullName(context);
+            manuscript.organization.organizationName = journalName;
             try {
                 parser = getEmailParser(JournalUtils.getParsingScheme(concept));
                 parser.parseMessage(dryadContent);
@@ -433,14 +440,23 @@ public class DryadEmailSubmission extends HttpServlet {
                         } else if (manuscript.manuscriptId != null) {
                             LOGGER.debug("running ApproveRejectReview Item (" + approved + ", " + manuscript.manuscriptId + ")");
                             ApproveRejectReviewItem.reviewItem(approved, manuscript.manuscriptId);
-                        } else {
-                            LOGGER.debug("need to look for ms in workflow");
-                            // we need to compare manuscript's authors with workflow items from the same journal.
-                            WorkflowItem[] workflowItems = WorkflowItem.findAllByJournalName(context, journalName);
                         }
                     } catch (ApproveRejectReviewItemException e) {
+                        // we need to compare manuscript's authors with workflow items from the same journal.
+                        WorkflowItem[] workflowItems = findMatchingWorkflowItems(context, manuscript);
+                        for (int i=0; i<workflowItems.length; i++) {
+                            ApproveRejectReviewItem.reviewItem(approved, workflowItems[i].getID());
+                        }
                         // somehow we need to note that this item did not find a match
-                        throw new ApproveRejectReviewItemException("Could not process " + journalCode + ":manuscript " + manuscript.manuscriptId + " for status " + manuscript.status, e);
+                        LOGGER.debug("need to look for ms in workflow");
+                        // we need to compare manuscript's authors with workflow items from the same journal.
+                        WorkflowItem[] workflowItems = WorkflowItem.findAllByJournalName(context, journalName);
+                        String itemlist = "";
+                        for (int i=0;i<workflowItems.length;i++) {
+                            itemlist = itemlist + workflowItems[i].getID() + " ";
+                        }
+                        throw new ApproveRejectReviewItemException("Found items for " + journalName + ": " + itemlist);
+//                        throw new ApproveRejectReviewItemException("Could not process " + journalCode + ":manuscript " + manuscript.manuscriptId + " for status " + manuscript.status, e);
                     }
                 }
             } else {
@@ -463,7 +479,12 @@ public class DryadEmailSubmission extends HttpServlet {
 
     private WorkflowItem[] findMatchingWorkflowItems(Context context, Manuscript manuscript) {
         String journalName = manuscript.organization.organizationName;
-        WorkflowItem[] workflowItems = WorkflowItem.findAllByJournalName(context, journalName);
+        WorkflowItem[] workflowItems = null;
+        try {
+            workflowItems = WorkflowItem.findAllByJournalName(context, journalName);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         ArrayList<WorkflowItem> matchingItems = new ArrayList<WorkflowItem>();
         for (int i=0;i<workflowItems.length;i++) {

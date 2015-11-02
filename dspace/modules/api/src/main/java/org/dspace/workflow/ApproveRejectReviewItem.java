@@ -133,7 +133,7 @@ public class ApproveRejectReviewItem {
                         try {
                             reviewItem(c, approved, wfi);
                         } catch (ApproveRejectReviewItemException e) {
-                            log.debug("hey wfi " + wfi.getID() + " is not a claimed task");
+                            log.debug("WorkflowItem " + wfi.getID() + " is not a claimed task");
                         }
                     }
                 }
