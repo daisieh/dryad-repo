@@ -543,18 +543,28 @@ public class JournalUtils {
 
         ManuscriptDatabaseStorageImpl manuscriptStorage = new ManuscriptDatabaseStorageImpl();
         List<Manuscript> manuscripts = getManuscriptsMatchingID(journalCode, manuscript.manuscriptId);
+<<<<<<< HEAD
 // if there isn't a manuscript already in the db, create it. Otherwise, update.
         if (manuscripts.size() == 0) {
             try {
                 manuscriptStorage.create(storagePath, manuscript);
                 log.info("adding manuscript " + manuscript.manuscriptId + " to the database for organization " + journalCode);
+=======
+        // if there isn't a manuscript already in the db, create it. Otherwise, update.
+        if (manuscripts.size() == 0) {
+            try {
+                manuscriptStorage.create(storagePath, manuscript);
+>>>>>>> journal-submit-accept-reject
             } catch (StorageException ex) {
                 log.error("Exception creating manuscript", ex);
             }
         } else {
             try {
                 manuscriptStorage.update(storagePath, manuscript);
+<<<<<<< HEAD
                 log.info("updating manuscript " + manuscript.manuscriptId + " to the database for organization " + journalCode);
+=======
+>>>>>>> journal-submit-accept-reject
             } catch (StorageException ex) {
                 log.error("Exception updating manuscript", ex);
             }
@@ -680,6 +690,7 @@ public class JournalUtils {
     public static String cleanJournalCode(String journalCode) {
         return journalCode.replaceAll("[^a-zA-Z0-9]", "").toUpperCase();
     }
+<<<<<<< HEAD
 
 //    public static Item getItemForManuscript (Manuscript manuscript) {
 //
@@ -712,4 +723,6 @@ public class JournalUtils {
         return Math.min(Math.min(a, b), c);
     }
 
+=======
+>>>>>>> journal-submit-accept-reject
 }

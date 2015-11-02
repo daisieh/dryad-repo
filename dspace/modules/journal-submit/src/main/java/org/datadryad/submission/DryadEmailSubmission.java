@@ -151,7 +151,6 @@ public class DryadEmailSubmission extends HttpServlet {
                     } catch (Exception details) {
                         DryadGmailService.addErrorLabelForMessageWithId(mID);
                         LOGGER.info("Exception thrown while processing message " + mID + ": " + details.getMessage() + ", " + details.getClass().getName() + details.getStackTrace().toString());
-                        throw new RuntimeException(details);
                     }
                     DryadGmailService.removeJournalLabelForMessageWithId(mID);
                 }
@@ -390,8 +389,8 @@ public class DryadEmailSubmission extends HttpServlet {
                 parser = getEmailParser(JournalUtils.getParsingScheme(concept));
                 parser.parseMessage(dryadContent);
                 manuscript = parser.getManuscript();
+                // make sure that the manuscript has the journalCode even if we found the parser by name:
                 manuscript.organization.organizationCode = journalCode;
-                manuscript.organization.organizationName = journalName;
             } catch (SubmissionException e) {
                 throw new SubmissionException("Journal " + journalCode + " parsing scheme not found");
             }

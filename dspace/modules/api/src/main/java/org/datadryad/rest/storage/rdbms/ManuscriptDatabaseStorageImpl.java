@@ -196,10 +196,9 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
             String query = "SELECT * FROM MANUSCRIPT WHERE msid = ? and organization_id = ? and active = ?";
             TableRow row = DatabaseManager.querySingleTable(context, MANUSCRIPT_TABLE, query, msid, organizationId, ACTIVE_TRUE);
             Manuscript manuscript = manuscriptFromTableRow(row);
-            if (manuscript == null) {
-                return null;
+            if (manuscript != null) {
+                manuscript.organization.organizationCode = organizationCode;
             }
-            manuscript.organization = getOrganizationFromInternalId(context, organizationId);
             return manuscript;
         }
     }
