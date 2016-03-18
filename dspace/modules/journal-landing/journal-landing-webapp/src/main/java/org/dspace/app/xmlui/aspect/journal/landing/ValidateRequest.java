@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.dspace.app.xmlui.utils.ContextUtil;
 import org.dspace.content.authority.Concept;
 import org.dspace.core.Context;
+import org.datadryad.api.DryadJournalConcept;
 
 import java.util.ArrayList;
 import java.util.HashMap;
