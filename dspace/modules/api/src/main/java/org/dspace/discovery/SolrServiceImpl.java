@@ -1189,6 +1189,7 @@ public class SolrServiceImpl implements SearchService, IndexingService {
             query.addFilterQuery(groupQuery.toString());
             return getSolr().query(query);
         } catch (Exception e) {
+            // return some sort of page error here.
             throw new org.dspace.discovery.SearchServiceException(e.getMessage(),e);
         }
     }
