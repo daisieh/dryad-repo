@@ -398,17 +398,18 @@
                 <h1 class="ds-div-head">Recently integrated journals</h1>
                 <div id="recently_integrated_journals" class="ds-static-div primary">
                     <div class="container">
-                        <!-- Annals of the Entomological Society of America -->
-                        <a class="single-image-link" href="/discover?field=prism.publicationName_filter&amp;query=&amp;fq=prism.publicationName_filter%3Aannals%5C+of%5C+the%5C+entomological%5C+society%5C+of%5C+america%5C%7C%5C%7C%5C%7CAnnals%5C+of%5C+the%5C+Entomological%5C+Society%5C+of%5C+America"><img class="pub-cover" src="/themes/Mirage/images/recentlyIntegrated-AESAME.png" alt="Annals of the Entomological Society of America" /></a>
 
-                        <!-- Environmental Entomology -->
-                        <a class="single-image-link" href="/discover?field=prism.publicationName_filter&amp;query=&amp;fq=prism.publicationName_filter%3Aenvironmental%5C+entomology%5C%7C%5C%7C%5C%7CEnvironmental%5C+Entomology"><img class="pub-cover" src="/themes/Mirage/images/recentlyIntegrated-ENVENT.png" alt="Environmental Entomology" /></a>
+                        <!-- Evolution Letters -->
+		        <a class="single-image-link" href="/discover?field=prism.publicationName_filter&amp;query=&amp;fq=prism.publicationName_filter%3Aevolution%5C+letters%5C%7C%5C%7C%5C%7CEvolution%5C+Letters"><img class="pub-cover" src="/themes/Mirage/images/recentlyIntegrated-EVOL_LETTS.png" alt="Evolution Letters" /></a>
 
-                        <!-- Journal of Economic Entomology -->
-                        <a class="single-image-link" href="/discover?field=prism.publicationName_filter&amp;query=&amp;fq=prism.publicationName_filter%3Ajournal%5C+of%5C+economic%5C+entomology%5C%7C%5C%7C%5C%7CJournal%5C+of%5C+Economic%5C+Entomology"><img class="pub-cover" src="/themes/Mirage/images/recentlyIntegrated-JEENTO.png" alt="Journal of Economic Entomology" /></a>
+                        <!-- Journal of the American Medical Informatics Association -->
+		        <a class="single-image-link" href="/discover?field=prism.publicationName_filter&amp;query=&amp;fq=prism.publicationName_filter%3Ajournal%5C+of%5C+the%5C+american%5C+medical%5C+informatics%5C+association%5C%7C%5C%7C%5C%7CJournal%5C+of%5C+the%5C+American%5C+Medical%5C+Informatics%5C+Association"><img class="pub-cover" src="/themes/Mirage/images/recentlyIntegrated-JAMIA.png" alt="Journal of the American Medical Informatics Association" /></a>
 
-                        <!-- Journal of Insect Science -->
-                        <a class="single-image-link" href="/discover?field=prism.publicationName_filter&amp;query=&amp;fq=prism.publicationName_filter%3Ajournal%5C+of%5C+insect%5C+science%5C%7C%5C%7C%5C%7CJournal%5C+of%5C+Insect%5C+Science"><img class="pub-cover" src="/themes/Mirage/images/recentlyIntegrated-JISESA.png" alt="Journal of Insect Science" /></a>
+                        <!-- Insect Systematics and Diversity -->
+                        <a class="single-image-link" href="/discover?field=prism.publicationName_filter&amp;query=&amp;fq=prism.publicationName_filter%3Ainsect%5C+systematics%5C+and%5C+diversity%5C%7C%5C%7C%5C%7CInsect%5C+Systematics%5C+and%5C+Diversity"><img class="pub-cover" src="/themes/Mirage/images/recentlyIntegrated-ISDIVE.png" alt="Insect Systematics and Diversity" /></a>
+
+                        <!-- Research Ideas and Outcomes -->
+		        <a class="single-image-link" href="/discover?field=prism.publicationName_filter&amp;query=&amp;fq=prism.publicationName_filter%3Aresearch%5C+ideas%5C+and%5C+outcomes%5C%7C%5C%7C%5C%7CResearch%5C+Ideas%5C+and%5C+Outcomes"><img class="pub-cover" src="/themes/Mirage/images/recentlyIntegrated-RIO.png" alt="Research Ideas and Outcomes" /></a>
 
                     </div>
                 </div>

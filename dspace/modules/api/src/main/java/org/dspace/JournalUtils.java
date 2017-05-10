@@ -424,6 +424,7 @@ public class JournalUtils {
         return result;
     }
 
+
     /**
      * Return a sorted map of archived data packages (Item objects) for the journal
      * associated with this object. The data packages are sorted according to
@@ -481,9 +482,11 @@ public class JournalUtils {
         return items;
     }
 
-
-    public static Manuscript getCrossRefManuscriptMatchingManuscript(Manuscript queryManuscript) {
+    public static Manuscript getCrossRefManuscriptMatchingManuscript(Manuscript queryManuscript, StringBuilder resultString) {
         String crossRefURL = null;
+        if (resultString == null) {
+            resultString = new StringBuilder();
+        }
         String pubDOI = queryManuscript.getPublicationDOI();
         if (pubDOI != null && (!"".equals(StringUtils.stripToEmpty(pubDOI).replaceAll("null","")))) {
             crossRefURL = crossRefApiRoot + "works/" + queryManuscript.getPublicationDOI();
@@ -506,6 +509,7 @@ public class JournalUtils {
 
         Manuscript matchedManuscript = null;
         try {
+            resultString.append("crossref url was " + crossRefURL + "\n");
             URL url = new URL(crossRefURL.replaceAll("\\s+", ""));
             ObjectMapper m = new ObjectMapper();
             JsonNode rootNode = m.readTree(url.openStream());
@@ -533,19 +537,46 @@ public class JournalUtils {
                 sb.append("\n");
             }
             String s = sb.toString();
-            log.error("Exception of type " + e.getClass().getName() + ": url is " + crossRefURL + "\n" + s);
+            log.error("Exception of type " + e.getClass().getName()+ ", message is: " + e.getMessage() + ": url is " + crossRefURL + "\n" + s);
         }
 
         // sanity check:
         if (matchedManuscript != null) {
-            double matchScore = getHamrScore(queryManuscript.getTitle(), matchedManuscript.getTitle());
+            double matchScore = getHamrScore(queryManuscript.getTitle().toLowerCase(), matchedManuscript.getTitle().toLowerCase());
+            matchedManuscript.optionalProperties.put("crossref-score", String.valueOf(matchScore));
+            // for now, scores greater than 0.5 seem to be a match. Keep an eye on this.
             if (matchScore < 0.5) {
-                log.error(queryManuscript.getTitle() + " matched " + matchedManuscript.getTitle() + " with score " + matchScore);
-                log.error("crossref url was " + crossRefURL);
+                resultString.append("\"" + queryManuscript.getTitle() + "\" matched \"" + matchedManuscript.getTitle() + "\" with score " + matchScore);
                 return null;
             }
         }
         return matchedManuscript;
+    }
+
+    public static boolean compareItemAuthorsToManuscript(Item item, Manuscript manuscript, StringBuilder result) {
+        boolean matched = false;
+        // count number of authors and number of matched authors: if equal, this is a match.
+        DCValue[] itemAuthors = item.getMetadata("dc", "contributor", "author", Item.ANY);
+        result.append("item has " + itemAuthors.length + " authors while manuscript has " + manuscript.getAuthorList().size() + " authors\n");
+        if (manuscript.getAuthorList().size() == itemAuthors.length) {
+            int numMatched = 0;
+            for (int j = 0; j < itemAuthors.length; j++) {
+                for (Author a : manuscript.getAuthorList()) {
+                    double score = JournalUtils.getHamrScore(Author.normalizeName(itemAuthors[j].value).toLowerCase(), a.getNormalizedFullName().toLowerCase());
+                    result.append("author " + itemAuthors[j].value + " matched " + a.getUnicodeFullName() + " with a score of " + score + "\n");
+                    if (score > 0.6) {
+                        numMatched++;
+                        break;
+                    }
+                }
+            }
+
+            if (numMatched == itemAuthors.length) {
+                matched = true;
+                result.append("matched " + item.getID() + " by authors");
+            }
+        }
+        return matched;
     }
 
     public static Manuscript manuscriptFromCrossRefJSON(JsonNode jsonNode, DryadJournalConcept dryadJournalConcept) {

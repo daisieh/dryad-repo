@@ -8,12 +8,14 @@
 package org.dspace.paymentsystem;
 
 import org.apache.log4j.Logger;
+import org.datadryad.api.DryadFunderConcept;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
 import org.dspace.app.xmlui.wing.element.Select;
 import org.dspace.app.xmlui.wing.element.Text;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.*;
+import org.dspace.content.authority.Choices;
 import org.dspace.core.Context;
 import org.dspace.eperson.EPerson;
 import org.dspace.JournalUtils;
@@ -189,6 +191,7 @@ public class PaymentSystemImpl implements PaymentSystemService {
                 // this item must've been created before the payment system was in place.
                 // We should create a completed placeholder cart for the original item, but make sure it is marked
                 // that it was created for versioning and should not be re-charged.
+                log.debug("creating a completed shopping cart for new version of item " + itemId);
                 ShoppingCart versionCart = createNewShoppingCart(context, itemId, context.getCurrentUser().getID(), "", ShoppingCart.CURRENCY_US, ShoppingCart.STATUS_COMPLETED);
                 versionCart.setNote("cart created for versioning; do not charge");
                 versionCart.update();
@@ -308,27 +311,49 @@ public class PaymentSystemImpl implements PaymentSystemService {
             // if this is an older cart that hasn't set a SponsoringOrganization yet, set one based on its journal.
             if (!shoppingcart.getStatus().equals(ShoppingCart.STATUS_COMPLETED)) {
                 String journal = "";
+                String funder = "";
                 Item item = Item.find(context, shoppingcart.getItem());
                 if (item != null) {
                     try {
-                        //only take the first journal
+                        // Look for the journal
                         DCValue[] values = item.getMetadata("prism.publicationName");
                         if (values != null && values.length > 0) {
                             journal = values[0].value;
                         }
+                        // Look for any valid funding entities
+                        // (for now, there should only be one; there could be more later
+                        DCValue[] fundingEntities = item.getMetadata("dryad.fundingEntity");
+                        if (fundingEntities != null && fundingEntities.length > 0) {
+                            if (fundingEntities[0].confidence == Choices.CF_ACCEPTED) {
+                                funder = fundingEntities[0].authority;
+                            }
+                        }
+
                     } catch (Exception e) {
                         log.error("Exception getting journal from item " + item.getID() + ":", e);
                     }
                 }
                 if (journal != null && journal.length() > 0) {
-                    //update shoppingcart
                     DryadJournalConcept journalConcept = JournalUtils.getJournalConceptByJournalName(journal);
                     if (journalConcept != null) {
                         shoppingcart.setSponsoringOrganization(journalConcept);
                     }
                 }
+
+                // funder of last resort:
+                log.info("checking to see if " + funder + " is a sponsor");
+                if (!shoppingcart.hasSubscription()) {
+                    if (!"".equals(funder)) {
+                        DryadFunderConcept funderConcept = DryadFunderConcept.getFunderConceptMatchingFunderID(context, funder);
+                        if (funderConcept != null && funderConcept.getSubscriptionPaid()) {
+                            log.info("funder is a sponsor");
+                            shoppingcart.setSponsoringOrganization(funderConcept);
+                        }
+                    }
+                }
             }
         }
+        shoppingcart.update();
         return shoppingcart.hasSubscription();
     }
 

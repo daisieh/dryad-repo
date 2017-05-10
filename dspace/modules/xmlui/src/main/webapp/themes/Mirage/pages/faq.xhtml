@@ -22,14 +22,14 @@
       <li><a href="#depositing-why">Why use Dryad?</a></li>
       <li><a href="#depositing-submission-integration">What is submission integration?</a></li>
       <li><a href="#depositing-acceptable-data">What kinds of data does Dryad accept?</a></li>
-	  <li><a href="#human-subjects">My research is on human subjects. Can I archive my data in Dryad?</a></li>
+      <li><a href="#human-subjects">My research is on human subjects. What do I need to consider when submitting my data?</a></li>
       <li><a href="#depositing-submission-formats">In what file format(s) should I submit my data?</a></li>
       <li><a href="#depositing-when-to-deposit">When should I submit my data?</a></li>
       <li><a href="#depositing-how-modify">How can I modify files I have submitted, or add more files to my existing Dryad submission?</a></li>
       <li><a href="#depositing-before-submission">What should I prepare before submission?</a></li>
       <li><a href="#depositing-accessibility-reusability">How can I make my data submission as accessible and reusable as possible?</a></li>
       <li><a href="#depositing-howto-submit">How do I submit data?</a></li>
-      <li><a href="#depositing-howto-readme">How do I write a ReadMe file?</a></li>
+      <li><a href="#depositing-howto-readme">How do I write a README file?</a></li>
       <li><a href="#depositing-howto-citedata">How do I cite the data in my manuscript?</a></li>
       <li><a href="#depositing-embargo">Do I have the option to embargo release of my data?</a></li>
       <li><a href="#depositing-cost">How much does it cost?</a></li>
@@ -79,7 +79,7 @@
 	<li>A <strong>curator</strong> will check your files for technical problems before they are released.</li>
 	<li>By default, data are <strong>embargoed</strong> until journal article publication. Dryad makes sure this happens so you do not need to.</li>
 	<li>If it is supported by the policy of the journal, you may, during the submission process, select a <strong>‘no-questions-asked’ embargo</strong> on data downloads for one year post-publication. Dryad will support a longer embargo if directed by a journal editor.</li>
-	<li>You are free to provide additional <strong>keywords</strong> that make the data easier to discover and additional <strong>documentation</strong> (in the form of ReadMe files) to help ensure proper data reuse.</li>
+	<li>You are free to provide additional <strong>keywords</strong> that make the data easier to discover and additional <strong>documentation</strong> (in the form of README files) to help ensure proper data reuse.</li>
 	<li>You have the ability to add <strong>new versions</strong> of data files in order to make updates or corrections.</li>
     <li>Dryad can make data <strong>securely available for peer review</strong> if the manuscript has been submitted to a <a href="/pages/journalLookup">participating partner journal</a>.</li>
     </ul>
@@ -118,7 +118,7 @@ Most types of files can be submitted (e.g., text, spreadsheets, video, photograp
 </p>
 <p>Data that was originally collected for another publication may be submitted as long as it is referenced by the current publication. Non-data files may also be submitted to Dryad provided the files are integral to the publication and can be released to the public domain. Note that policies for the whether to submit non-data Supplementary Materials to the journal or to Dryad vary among journals.</p>     
 <p>
-Dryad does <strong>not</strong> accept submissions that contain <strong>personally identifiable human subject information</strong>, since all data is publicly available. Human subject data must be properly anonymized and prepared under applicable legal and ethical guidelines. The following article may be helpful: Hrynaszkiewicz I, Norton ML, Vickers AJ, Altman DG (2010) Preparing raw clinical data for publication: guidance for journal editors, authors, and peer reviewers. BMJ 340, c181. <a href="http://dx.doi.org/10.1136/bmj.c181">http://dx.doi.org/10.1136/bmj.c181</a>
+Dryad does <strong>not</strong> accept submissions that contain <strong>personally identifiable human subject information</strong>, since all data is publicly available. Human subjects data must be properly anonymized and prepared under applicable legal and ethical guidelines. The following article may be helpful: Hrynaszkiewicz I, Norton ML, Vickers AJ, Altman DG (2010) Preparing raw clinical data for publication: guidance for journal editors, authors, and peer reviewers. BMJ 340, c181. <a href="http://dx.doi.org/10.1136/bmj.c181">http://dx.doi.org/10.1136/bmj.c181</a>
 </p>
 <p>
 Dryad does not accept any files with licensing terms that are incompatible with the <a href="http://creativecommons.org/publicdomain/zero/1.0">Creative Commons Zero waiver</a>.
@@ -126,10 +126,10 @@ Dryad does not accept any files with licensing terms that are incompatible with 
 <p>
 While Dryad can host software scripts and snapshots of software source code, we recommend the use of a public software repository with version control for the ongoing maintenance of software packages. Software in Dryad must be released with a <a href="http://creativecommons.org/publicdomain/zero/1.0">Creative Commons Zero waiver</a>.
 </p>
-
-<h2 id="human-subjects">My research is on human subjects. Can I archive my data in Dryad?</h2>
-<p>Dryad <strong>only</strong> accepts human subject data that is properly anonymized and prepared under applicable legal and ethical guidelines. The following article may be helpful in preparing your data for archiving: Hrynaszkiewicz I, Norton ML, Vickers AJ, Altman DG (2010) Preparing raw clinical data for publication: guidance for journal editors, authors, and peer reviewers. BMJ 340, c181. <a href="http://dx.doi.org/10.1136/bmj.c181">http://dx.doi.org/10.1136/bmj.c181</a></p>
-
+<h2 id="human-subjects">My research is on human subjects. What do I need to consider when submitting my data?</h2>
+<p>
+Data archived in Dryad are publicly available, and any human subjects data must be properly anonymized and prepared under applicable legal and ethical guidelines. When de-identifying your data, both direct and indirect identifiers need to be considered. <strong>Dryad does not allow any direct identifiers, but a dataset may contain up to 3 indirect identifiers.</strong> Direct identifiers include variables such as participant’s name, initials, email, and postal code; indirect identifiers are data that if combined might lead to identification (see <a href="/pages/humanSubjectsData">additional guidance</a> on human subjects data).
+</p>
 <h2 id="depositing-submission-formats">In what file format(s) should I submit my data?</h2>
 <p>
 Due to the diversity of datatypes hosted by the repository, Dryad does not require a single file format, or even set of file formats, but rather encourages users to follow accepted <a href="http://biosharing.org/standards/exchange_format">community standards</a> where they exist. Users are strongly encouraged to ensure that data can be easily extracted from the files provided (e.g., by using CSV rather than PDF). View <a href="/pages/filetypes">additional guidance</a> and a list of preservation-friendly file formats.
@@ -190,15 +190,15 @@ Submitters are advised to follow community data standards for the content and fo
 </p>
 
 <p>
-File names should ideally be short, informative, and unique. Including information such as author name, journal abbreviation, date, and/or type of analysis performed can help differentiate your files, but save most details for your description field or ReadMe. Please stick to alphanumerics and underscores (no special characters), and include only one period, separating the file name from its extension.
+File names should ideally be short, informative, and unique. Including information such as author name, journal abbreviation, date, and/or type of analysis performed can help differentiate your files, but save most details for your description field or README. Please stick to alphanumerics and underscores (no special characters), and include only one period, separating the file name from its extension.
 </p>
 
 <p>
-We strongly encourage submitters to include one or more ReadMe files that provide additional information to help users make sense of the files (e.g., instructions for use with software scripts, variable abbreviations, measurement units, and data codes). View <a href="/pages/readme">additional guidance</a> on ReadMe files.
+We strongly encourage submitters to include one or more README files that provide additional information to help users make sense of the files (e.g., instructions for use with software scripts, variable abbreviations, measurement units, and data codes). View <a href="/pages/readme">additional guidance</a> on README files.
 </p>
 
 <p>
-All <strong>human subject data</strong> must be properly anonymized and prepared under applicable legal and ethical guidelines. The following article may be helpful in preparing your human subject data for archiving: Hrynaszkiewicz I, Norton ML, Vickers AJ, Altman DG (2010) Preparing raw clinical data for publication: guidance for journal editors, authors, and peer reviewers. BMJ 340, c181. <a href="http://dx.doi.org/10.1136/bmj.c181">http://dx.doi.org/10.1136/bmj.c181</a>
+All <strong>human subjects data</strong> must be properly anonymized and prepared under applicable legal and ethical guidelines. The following article may be helpful in preparing your human subjects data for archiving: Hrynaszkiewicz I, Norton ML, Vickers AJ, Altman DG (2010) Preparing raw clinical data for publication: guidance for journal editors, authors, and peer reviewers. BMJ 340, c181. <a href="http://dx.doi.org/10.1136/bmj.c181">http://dx.doi.org/10.1136/bmj.c181</a>
 </p>
 
 <h2 id="depositing-accessibility-reusability">How can I make my data submission as accessible and reusable as possible?</h2>
@@ -208,7 +208,7 @@ All <strong>human subject data</strong> must be properly anonymized and prepared
 	<li>Keep your file names short, informative, unique, and free of special characters.</li>
     <li>Consider submitting your data files in multiple formats if you think that will enhance their ability to be reanalyzed. View <a href="/pages/filetypes">additional guidance</a> and a list preferred Dryad file formats.</li>
     <li>Provide descriptive information within your data files (e.g., column headers in a spreadsheet).</li>
-    <li>Provide a <a href="/pages/readme">ReadMe file</a> that provides contextual information about the data file so that it can be interpreted correctly.</li>
+    <li>Provide a <a href="/pages/readme">README file</a> that provides contextual information about the data file so that it can be interpreted correctly.</li>
     <li>Provide titles, descriptions and keywords for your datafiles, to make the data more discoverable and to assist in understanding the relationship of the datafile to the publication.</li>
 </ul>
 
@@ -221,15 +221,15 @@ All <strong>human subject data</strong> must be properly anonymized and prepared
 <li>If you are entering data for a previously published work, you may use a DOI or PubMedID to pull up the publication information.</li>
 <li>If the prior publication lacks a DOI and PubMedID, or if you are submitting data prior to publication in a journal that is <a href="/pages/journalLookup">not yet integrated</a> with Dryad, you will first need to describe the publication (e.g. the author names, the title, the journal).</li>
 <li>You will need to make a legal affirmation on behalf of all the authors that the data can be released under a CC0 license.</li>
-<li>Then you will upload your data files and ReadMe files and modify the metadata to your liking. You have the opportunity to save an incomplete submission and return to it later.</li>
+<li>Then you will upload your data files and README files and modify the metadata to your liking. You have the opportunity to save an incomplete submission and return to it later.</li>
 </ul>
 
 <p>
 If you encounter any difficulties, or realize that you need to make modifications after you have submitted your data package, please contact us through our <a href="/feedback">web form</a> or email <a href="mailto:help@datadryad.org">help@datadryad.org</a>.
 </p>
 
-<h2 id="depositing-howto-readme">How do I write a ReadMe file?</h2>
-<p>A ReadMe file is intended to help ensure that the data can be correctly interpreted. You may submit one ReadMe for the data package as a whole and/or provide a separate ReadMe for each individual data file to supplement the file descriptions. We recommend that a ReadMe be a plain text file containing the following:</p>
+<h2 id="depositing-howto-readme">How do I write a README file?</h2>
+<p>A README file is intended to help ensure that the data can be correctly interpreted. You may submit one README for the data package as a whole and/or provide a separate README for each individual data file to supplement the file descriptions. We recommend that a README be a plain text file containing the following:</p>
 <ul>
     <li>for each filename, a short description of what data it includes</li>
     <li>for tabular data: definitions of column headings and row labels; data codes (including missing data); and measurement units</li>
@@ -239,7 +239,7 @@ If you encounter any difficulties, or realize that you need to make modification
 </ul>
 
 <p>
-View <a href="/pages/readme">additional guidance</a> on ReadMe files.
+View <a href="/pages/readme">additional guidance</a> on README files.
 </p>
 
 <h2 id="depositing-howto-citedata">How do I cite the data in my manuscript?</h2>
