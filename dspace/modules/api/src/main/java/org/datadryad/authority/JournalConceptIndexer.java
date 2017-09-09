@@ -72,9 +72,10 @@ public class JournalConceptIndexer implements AuthorityIndexerInterface {
         for (String name : concept.getAlternateNames()) {
             names.add(name);
         }
-        for (String name : names) {
+        for (int i = 0; i < names.size(); i++) {
+            String name = names.get(i);
             AuthorityValue authorityValue = new AuthorityValue();
-            authorityValue.setId(String.valueOf(concept.getConceptID()));
+            authorityValue.setId(String.valueOf(concept.getConceptID())+"_"+i);
             authorityValue.setSource(SOURCE);
             authorityValue.setField(FIELD_NAME);
             authorityValue.setValue(concept.getFullName());
@@ -83,6 +84,7 @@ public class JournalConceptIndexer implements AuthorityIndexerInterface {
             authorityValue.setCreationDate(new Date());
             authorityValue.setLastModified(new Date());
             authorityValues.add(authorityValue);
+            System.out.println("adding " + authorityValue);
         }
         return authorityValues;
     }

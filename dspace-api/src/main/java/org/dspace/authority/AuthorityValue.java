@@ -90,11 +90,11 @@ public class AuthorityValue {
     }
 
     public String getId() {
-        return id;
+        return id.replaceAll("_\\d+", "");
     }
 
     public String getIndexID() {
-        return getSource() + getId();
+        return getSource() + id;
     }
 
     public String getField() {
@@ -379,6 +379,7 @@ public class AuthorityValue {
                 ", lastModified=" + lastModified +
                 ", nameVariants=" + nameVariants +
                 ", otherMetadata=" + otherMetadata +
+                ", indexID=" + getIndexID() +
                 '}';
     }
 
