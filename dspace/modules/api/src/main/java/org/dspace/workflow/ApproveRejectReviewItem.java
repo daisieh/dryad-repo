@@ -14,6 +14,7 @@ import org.dspace.content.MetadataSchema;
 import org.dspace.content.WorkspaceItem;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
+import org.dspace.discovery.IndexingService;
 import org.dspace.discovery.SearchService;
 import org.dspace.eperson.EPerson;
 import org.dspace.utils.DSpace;
@@ -44,6 +45,10 @@ public class ApproveRejectReviewItem {
     private static final String PUBLICATION_DATE = "dc.date.issued";
 
     private static final Logger log = Logger.getLogger(ApproveRejectReviewItem.class);
+
+    static DSpace dspace = new DSpace();
+    static IndexingService indexer = dspace.getServiceManager().getServiceByName(IndexingService.class.getName(),IndexingService.class);
+
     public static void main(String[] args) throws ApproveRejectReviewItemException, ParseException {
         // create an options object and populate it
         CommandLineParser parser = new PosixParser();
@@ -264,17 +269,8 @@ public class ApproveRejectReviewItem {
                     disassociateFromManuscript(dataPackage, manuscript);
                 }
             }
-        } catch (SQLException ex) {
-            throw new ApproveRejectReviewItemException(ex);
-        } catch (AuthorizeException ex) {
-            throw new ApproveRejectReviewItemException(ex);
-        } catch (WorkflowConfigurationException ex) {
-            throw new ApproveRejectReviewItemException(ex);
-        } catch (IOException ex) {
-            throw new ApproveRejectReviewItemException(ex);
-        } catch (MessagingException ex) {
-            throw new ApproveRejectReviewItemException(ex);
-        } catch (WorkflowException ex) {
+            indexer.indexContent(c, wfi.getItem(), true);
+        } catch (Exception ex) {
             throw new ApproveRejectReviewItemException(ex);
         }
         finally {
