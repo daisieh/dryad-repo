@@ -256,14 +256,6 @@ public class InstallItem
         }
         */
 
-        log.info(" -- registering DOI");
-        IdentifierService service = new DSpace().getSingletonService(IdentifierService.class);
-        try {
-            service.register(c, item);
-        } catch (IdentifierException e) {
-            throw new IOException(e);
-        }
-
         log.info(" -- updating collections and archived flag");
         // create collection2item mapping
         is.getCollection().addItem(item);
@@ -278,6 +270,14 @@ public class InstallItem
         log.info(" -- saving item metadata");
         item.update();
         c.addEvent(new Event(Event.INSTALL, Constants.ITEM, item.getID(), item.getHandle()));
+
+        log.info(" -- registering DOI");
+        IdentifierService service = new DSpace().getSingletonService(IdentifierService.class);
+        try {
+            service.register(c, item);
+        } catch (IdentifierException e) {
+            throw new IOException(e);
+        }
 
         // remove in-progress submission
         log.info(" -- deleting in-progress submission");
