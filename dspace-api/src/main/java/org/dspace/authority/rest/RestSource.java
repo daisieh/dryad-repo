@@ -21,7 +21,7 @@ import java.util.List;
  */
 public abstract class RestSource implements AuthoritySource {
 
-    protected RESTConnector restConnector;
+    protected static RESTConnector restConnector;
 
     public RestSource(String url) {
         this.restConnector = new RESTConnector(url);

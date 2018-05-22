@@ -7,6 +7,7 @@
  */
 package org.dspace.authority.rest;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.dspace.authority.util.XMLUtils;
@@ -36,10 +37,9 @@ public class RESTConnector {
         this.url = url;
     }
 
-    public Document get(String path) {
+    public Document get(String path, String token) {
         Document document = null;
 
-        InputStream result = null;
         path = trimSlashes(path);
 
         String fullPath = url + '/' + path;
@@ -47,7 +47,12 @@ public class RESTConnector {
 
         try {
             HttpClient httpclient = new HttpClient();
-
+            if (token != null) {
+                httpGet.addRequestHeader(new Header("Authorization", "Bearer " + token));
+            }
+            log.error("full path is " + fullPath);
+//            log.error(httpGet.getResponseBodyAsString());
+//            httpGet.addRequestHeader(new Header("Accept", "application/orcid+json"));
             httpclient.executeMethod(httpGet);
             //do not close this httpClient
             document = XMLUtils.convertStreamToXML(httpGet.getResponseBodyAsStream());
@@ -58,6 +63,10 @@ public class RESTConnector {
         }
         httpGet.releaseConnection();
         return document;
+    }
+
+    public Document get(String path) {
+        return get(path, null);
     }
 
     protected void getGotError(Exception e, String fullPath) {

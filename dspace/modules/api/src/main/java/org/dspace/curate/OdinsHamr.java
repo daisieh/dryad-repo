@@ -327,7 +327,7 @@ public class OdinsHamr extends AbstractCurationTask {
             URL orcidQuery = new URL(ORCID_QUERY_BASE + "%22" + aDOI + "%22");
             Document orcidDoc = docb.parse(orcidQuery.openStream());
             XMLtoBio converter = new XMLtoBio();
-            return orcidBios = converter.convert(orcidDoc);
+            return orcidBios = converter.convertList(orcidDoc);
         } catch (MalformedURLException e) {
             log.error("cannot make a valid URL for aDOI="  + aDOI, e);
         } catch (IOException e) {

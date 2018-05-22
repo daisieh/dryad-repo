@@ -1,13 +1,10 @@
 package org.dspace.authenticate;
 
 import org.apache.log4j.Logger;
-import org.apache.tools.ant.taskdefs.Get;
 import org.dspace.authority.orcid.Orcid;
 import org.dspace.authority.orcid.model.Bio;
-import org.dspace.authorize.AuthorizeException;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
-import org.dspace.core.LogManager;
 import org.dspace.eperson.EPerson;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,16 +65,14 @@ public class OAuthAuthenticationMethod implements AuthenticationMethod{
 
         String orcid_api_url = ConfigurationManager.getProperty("authentication-oauth","orcid-api-url");
 
-        Orcid orcidObject = new Orcid(orcid_api_url);
-
         if(orcid!=null)
         {
             if(token==null||test){
-                bio = orcidObject.getBio(orcid);
+                bio = Orcid.getBio(orcid);
             }
             else
             {
-                bio = orcidObject.getBio(orcid,token);
+                bio = Orcid.getBio(orcid,token);
             }
         }
         //get the email from orcid

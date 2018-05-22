@@ -7,6 +7,7 @@
  */
 package org.dspace.authority.orcid.xml;
 
+import org.dspace.authority.orcid.Orcid;
 import org.dspace.authority.orcid.model.Bio;
 import org.dspace.authority.orcid.model.BioExternalIdentifier;
 import org.dspace.authority.orcid.model.BioName;
@@ -82,39 +83,51 @@ public class XMLtoBio extends Converter {
     protected String ORCID_NOT_FOUND = "ORCID [\\d-]* not found";
 
 
-    public List<Bio> convert(Document xml) {
+    public List<Bio> convertList(Document xml) {
         List<Bio> result = new ArrayList<Bio>();
 
-        if (XMLErrors.check(xml)) {
-
-            try {
-                Iterator<Node> iterator = XMLUtils.getNodeListIterator(xml, ORCID_BIO);
-                while (iterator.hasNext()) {
-                    Bio bio = convertBio(iterator.next());
-                    result.add(bio);
+        if (xml != null && xml.getDocumentElement() != null) {
+            NodeList results = xml.getDocumentElement().getElementsByTagName("search:result");
+            for (int i = 0; i < results.getLength(); i++) {
+                Node child = results.item(i).getFirstChild();
+                while (child != null) {
+                    if (child.getNodeName().equals("common:orcid-identifier")) {
+                        Node orcid = child.getFirstChild();
+                        while (orcid != null) {
+                            if (orcid.getNodeName().equals("common:path")) {
+                                Bio bio = Orcid.getBio(orcid.getFirstChild().getNodeValue());
+                                result.add(bio);
+                            }
+                            orcid = orcid.getNextSibling();
+                        }
+                    }
+                    child = child.getNextSibling();
                 }
-            } catch (XPathExpressionException e) {
-                log.error("Error in xpath syntax", e);
             }
-        } else {
-            processError(xml);
         }
-
         return result;
     }
 
-    private Bio convertBio(Node node) {
-        Bio bio = new Bio();
-
-        setOrcid(node,bio);
-        setPersonalDetails(node, bio);
-        setContactDetails(node, bio);
-        setKeywords(node, bio);
-        setExternalIdentifiers(node, bio);
-        setResearcherUrls(node, bio);
-        setBiography(node, bio);
-
-        return bio;
+    public Bio convert(Document xml) {
+        Bio result = new Bio();
+        if (xml != null && xml.getDocumentElement() != null) {
+            NodeList results = xml.getDocumentElement().getElementsByTagName("person:name");
+            if (results.getLength() > 0) {
+                if (results.item(0).hasAttributes()) {
+                    result.setOrcid(results.item(0).getAttributes().getNamedItem("path").toString());
+                }
+                Node child = results.item(0).getFirstChild();
+                while (child != null) {
+                    if (child.getNodeName().equals("personal-details:given-names")) {
+                        result.getName().setGivenNames(child.getFirstChild().getNodeValue());
+                    } else if (child.getNodeName().equals("personal-details:family-name")) {
+                        result.getName().setFamilyName(child.getFirstChild().getNodeValue());
+                    }
+                    child = child.getNextSibling();
+                }
+            }
+        }
+        return result;
     }
 
     protected void processError(Document xml)  {
