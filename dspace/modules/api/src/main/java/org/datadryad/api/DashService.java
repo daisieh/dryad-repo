@@ -316,6 +316,7 @@ public class DashService {
 
         // add provenances as curation activities
         JsonNode provenances = pkg.getDataPackage().getProvenancesAsCurationActivities();
+        log.debug("migrating provenances " + provenances.toString());
         for (int i=0; i<provenances.size(); i++) {
             int responseCode = addCurationActivity(pkg.getDataPackage(), provenances.get(i));
             if (responseCode < 200 || responseCode > 202) {
