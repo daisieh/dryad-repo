@@ -297,8 +297,7 @@ public class DashService {
                 int unsubmittedID = curationActivities.get(0).get("id").intValue();
                 log.debug("unsubmitted activity with id " + unsubmittedID);
                 try {
-                    String encodedDOI = URLEncoder.encode(pkg.getDataPackage().getIdentifier(), "UTF-8");
-                    URL url = new URL(dashServer + "/api/datasets/" + encodedDOI + "/curation_activity/" + unsubmittedID);
+                    URL url = new URL(dashServer + "/api/curation_activity/" + unsubmittedID);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
                     connection.setRequestProperty("Accept", "application/json");
