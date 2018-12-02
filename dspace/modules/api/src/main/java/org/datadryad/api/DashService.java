@@ -291,7 +291,7 @@ public class DashService {
         JsonNode curationActivities = getCurationActivity(pkg);
         log.debug("curation activities " + curationActivities.toString());
         // if the only curation activity is the default "Unsubmitted," delete it
-        if (curationActivities.isArray() && curationActivities.size() > 1) {
+        if (curationActivities.isArray() && curationActivities.size() == 1) {
             log.error("only one curationActivity: " + curationActivities.toString());
             if (curationActivities.get(0).get("status").textValue().equals("Unsubmitted")) {
                 int unsubmittedID = curationActivities.get(0).get("id").intValue();
