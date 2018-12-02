@@ -289,13 +289,13 @@ public class DashService {
         log.debug("migrating provenances");
         // get curationActivities from Dash package
         JsonNode curationActivities = getCurationActivity(pkg);
-
+        log.debug("curation activities " + curationActivities.toString());
         // if the only curation activity is the default "Unsubmitted," delete it
         if (curationActivities.isArray() && curationActivities.size() > 1) {
             log.error("only one curationActivity: " + curationActivities.toString());
             if (curationActivities.get(0).get("status").textValue().equals("Unsubmitted")) {
                 int unsubmittedID = curationActivities.get(0).get("id").intValue();
-                log.error("unsubmitted activity with id " + unsubmittedID);
+                log.debug("unsubmitted activity with id " + unsubmittedID);
                 try {
                     String encodedDOI = URLEncoder.encode(pkg.getDataPackage().getIdentifier(), "UTF-8");
                     URL url = new URL(dashServer + "/api/datasets/" + encodedDOI + "/curation_activity/" + unsubmittedID);
@@ -453,6 +453,7 @@ public class DashService {
             }
             JsonNode rootNode = mapper.readTree(out.toString());
             if (rootNode.isArray()) {
+                log.debug("got array for curation activity");
                 return rootNode;
             }
         } catch (Exception e) {
