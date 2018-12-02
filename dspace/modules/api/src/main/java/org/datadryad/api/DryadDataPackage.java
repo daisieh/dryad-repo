@@ -543,6 +543,7 @@ public class DryadDataPackage extends DryadObject {
         ArrayNode resultNode = mapper.createArrayNode();
 
         for (String provenance : provenances) {
+            log.debug("getting provenance " + provenance);
             Matcher authorActionRequired = Pattern.compile(".+Rejected by .+?, reason: .+ on (\\d+-\\d+-\\d+.*)").matcher(provenance);
             Matcher curation1 = Pattern.compile("Approved by ApproveRejectReviewItem based on metadata for .+ on (\\d+-\\d+-\\d+).*\\(GMT\\) .+").matcher(provenance);
             Matcher curation2 = Pattern.compile("Enter dryadAcceptEditReject Moved by .+, reason: .+ on (\\d+-\\d+-\\d+)").matcher(provenance);
@@ -587,6 +588,7 @@ public class DryadDataPackage extends DryadObject {
                 node.put("status", "Status Unchanged");
                 // it doesn't really matter what the date is for Status Unchanged, because it doesn't affect status, I guess.
             }
+            log.debug("adding " + node.toString());
             resultNode.add(node);
         }
 
