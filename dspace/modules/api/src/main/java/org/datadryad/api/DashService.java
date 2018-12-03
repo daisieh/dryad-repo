@@ -289,10 +289,8 @@ public class DashService {
         log.debug("migrating provenances");
         // get curationActivities from Dash package
         JsonNode curationActivities = getCurationActivity(pkg);
-        log.debug("curation activities " + curationActivities.toString());
         // if the only curation activity is the default "Unsubmitted," delete it
         if (curationActivities.size() == 1) {
-            log.error("only one curationActivity: " + curationActivities.toString());
             if (curationActivities.get(0).get("status").textValue().equals("Unsubmitted")) {
                 int unsubmittedID = curationActivities.get(0).get("id").intValue();
                 log.debug("unsubmitted activity with id " + unsubmittedID);
@@ -306,12 +304,12 @@ public class DashService {
 
                     InputStream inputStream = connection.getInputStream();
                 } catch (Exception e) {
-                    log.fatal("Unable to delete curation activity from Dash", e);
+                    throw new RuntimeException("Unable to delete curation activity from Dash", e);
                 }
             }
         }
         if (curationActivities.size() > 1) {
-            log.fatal("More than one curation activity for package " + pkg.getDataPackage().getIdentifier() + ": are you sure you want to migrate provenances?");
+            throw new RuntimeException("More than one curation activity for package " + pkg.getDataPackage().getIdentifier() + ": are you sure you want to migrate provenances?");
         }
 
         // add provenances as curation activities
