@@ -551,7 +551,7 @@ public class DryadDataPackage extends DryadObject {
             Matcher embargoed = Pattern.compile(".+Entered publication blackout by .+ on (\\d+-\\d+-\\d+).*\\(GMT\\).*").matcher(provenance);
             Matcher peerReview1 = Pattern.compile("Enter reviewStep Moved by .+, reason: .+ on (\\d+-\\d+-\\d+).*\\(GMT\\).*").matcher(provenance);
             Matcher peerReview2 = Pattern.compile("Data package moved to review on (\\d+-\\d+-\\d+).*").matcher(provenance);
-            Matcher published = Pattern.compile(".*Approved for entry into archive by .+ on (\\d+-\\d+-\\d+).*").matcher(provenance);
+            Matcher published = Pattern.compile("Made available in DSpace on (\\d+-\\d+-\\d+).*").matcher(provenance);
             Matcher submitted = Pattern.compile("Submitted by .+ on (\\d+-\\d+-\\d+)T.+?Z.*").matcher(provenance);
             Matcher withdrawn = Pattern.compile("Item withdrawn by .+ on (\\d+-\\d+-\\d+).*").matcher(provenance);
 
