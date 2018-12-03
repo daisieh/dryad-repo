@@ -557,6 +557,7 @@ public class DryadDataPackage extends DryadObject {
 
             ObjectNode node = mapper.createObjectNode();
             node.put("note", provenance);
+            node.put("user", (JsonNode) null);
 
             if (authorActionRequired.matches()) {
                 node.put("status", "Author Action Required");
