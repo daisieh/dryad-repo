@@ -395,6 +395,7 @@ public class DashService {
 
         try {
             String dashJSON = mapper.writeValueAsString(node);
+            log.debug("trying to add " + dashJSON);
             String encodedDOI = URLEncoder.encode(dataPackage.getIdentifier(), "UTF-8");
             URL url = new URL(dashServer + "/api/datasets/" + encodedDOI + "/curation_activity");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
