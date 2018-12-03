@@ -545,7 +545,7 @@ public class DryadDataPackage extends DryadObject {
         for (String provenance : provenances) {
             log.debug("getting provenance " + provenance);
             provenance = provenance.replaceAll("[\\n|\\r]", " ");
-            Matcher authorActionRequired = Pattern.compile(".+Rejected by .+?, reason: .+ on (\\d+-\\d+-\\d+.*).*").matcher(provenance);
+            Matcher authorActionRequired = Pattern.compile(".*Rejected by .+?, reason: .+ on (\\d+-\\d+-\\d+.*).*").matcher(provenance);
             Matcher curation1 = Pattern.compile("Approved by ApproveRejectReviewItem based on metadata for .+ on (\\d+-\\d+-\\d+).*\\(GMT\\) .*").matcher(provenance);
             Matcher curation2 = Pattern.compile("Enter dryadAcceptEditReject Moved by .+, reason: .+ on (\\d+-\\d+-\\d+).*").matcher(provenance);
             Matcher embargoed = Pattern.compile(".+Entered publication blackout by .+ on (\\d+-\\d+-\\d+).*\\(GMT\\).*").matcher(provenance);
