@@ -526,7 +526,7 @@ public class DryadDataPackage extends DryadObject {
 
     private List<String> getProvenances() {
         ArrayList<String> resultList = new ArrayList<>();
-        if (useDryadClassic) {
+        if (item != null) {
             DCValue[] provenanceValues = item.getMetadata("dc.description.provenance");
             if (provenanceValues != null && provenanceValues.length > 0) {
                 for (DCValue provenanceValue : provenanceValues) {
