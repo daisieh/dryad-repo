@@ -669,7 +669,7 @@ public class JournalUtils {
             for (Author msAuthor : manuscript.getAuthorList()) {
                 double score = JournalUtils.getHamrScore(itemAuthor.getNormalizedFullName().toLowerCase().replaceAll("[^a-zA-Z ]", ""), msAuthor.getNormalizedFullName().toLowerCase().replaceAll("[^a-zA-Z ]", ""));
                 result.append("item author " + itemAuthor.getNormalizedFullName() + " matched ms author " + msAuthor.getUnicodeFullName() + " with a score of " + score + "\n");
-                if (itemAuthor.equals(msAuthor)) {
+                if (score > 0.8) {
                     result.append("  matched\n");
                     numMatched++;
                     break;
