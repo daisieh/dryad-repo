@@ -16,6 +16,6 @@ public class ErrorsResponse {
     }
 
     public Response.ResponseBuilder toResponse() {
-        return Response.status(Integer.valueOf(errors.status)).entity(this);
+        return Response.status(Integer.valueOf(errors.status)).entity(errors.detail);
     }
 }
