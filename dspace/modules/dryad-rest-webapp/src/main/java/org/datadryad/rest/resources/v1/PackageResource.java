@@ -164,12 +164,12 @@ public class PackageResource {
             dryadJournalConcept = JournalUtils.getJournalConceptByJournalID(journalRef);
         }
         if (dryadJournalConcept == null) {
-            ErrorsResponse error = ResponseFactory.makeError("Invalid journal reference: should be either a Dryad journal code or ISSN", "Invalid journal reference", uriInfo, Status.BAD_REQUEST.getStatusCode());
+            ErrorsResponse error = ResponseFactory.makeError("Invalid journal reference: should be either a Dryad journal code or ISSN", "Invalid journal reference", uriInfo, Status.FORBIDDEN.getStatusCode());
             return error.toResponse().build();
         }
         Manuscript manuscript = JournalUtils.getManuscriptFromManuscriptStorage(msID, dryadJournalConcept);
         if (manuscript == null) {
-            ErrorsResponse error = ResponseFactory.makeError("Invalid manuscript number: Dryad does not have metadata for this manuscript", "Invalid manuscript number", uriInfo, Status.BAD_REQUEST.getStatusCode());
+            ErrorsResponse error = ResponseFactory.makeError("Invalid manuscript number: Dryad does not have metadata for this manuscript", "Invalid manuscript number", uriInfo, Status.BAD_GATEWAY.getStatusCode());
             return error.toResponse().build();
         }
         if (manuscript.isValid()) {
@@ -186,7 +186,7 @@ public class PackageResource {
             URI uri = ub.path(manuscript.getManuscriptId()).build();
             return Response.created(uri).entity(manuscript).build();
         } else {
-            ErrorsResponse error = ResponseFactory.makeError("Please check the structure of your object", "Invalid manuscript object", uriInfo, Status.BAD_REQUEST.getStatusCode());
+            ErrorsResponse error = ResponseFactory.makeError("Please check the structure of your object", "Invalid manuscript object", uriInfo, Status.REQUESTED_RANGE_NOT_SATISFIABLE.getStatusCode());
             return error.toResponse().build();
         }
     }
